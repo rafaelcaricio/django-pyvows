@@ -9,7 +9,7 @@
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
 from setuptools import setup
-from django_pyvows.version import __version__
+from django_pyvows import __version__
 
 setup(
     name = 'django-pyvows',
