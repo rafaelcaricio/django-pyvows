@@ -8,22 +8,22 @@
 # http://www.opensource.org/licenses/mit-license
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
-from os.path import abspath, join, dirname
-
 from pyvows import Vows, expect
-from django_pyvows import DjangoContext, Assertions
+from django_pyvows.context import DjangoContext, DjangoSubContext
+import django_pyvows.assertions
 
 from sandbox.main.views import home
 
+@Vows.batch
 class UrlVows(DjangoContext):
 
-    def settings_path(self):
-        return abspath(join(dirname(__file__), 'sandbox', 'settings.py'))
+    def _get_settings(self):
+        return 'sandbox.settings'
 
-    class Home(Vows.Context):
+    class Home(DjangoSubContext):
 
         def topic(self):
-            return self._url('/')
+            return self._url('^$')
 
         def should_have_home_url_mapped(self, topic):
             expect(topic).to_be_mapped()
