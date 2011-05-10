@@ -12,6 +12,7 @@ import os
 
 from pyvows import Vows
 from django_pyvows.assertions import Url
+from django.http import HttpRequest
 
 class DjangoContext(Vows.Context):
 
@@ -29,8 +30,14 @@ class DjangoContext(Vows.Context):
     def _url(self, path):
         return Url(self, path)
 
+    def _request(self, **kw):
+        return HttpRequest(**kw)
+
 class DjangoSubContext(Vows.Context):
 
     def _url(self, path):
         return self.parent._url(path)
+
+    def _request(self, **kw):
+        return self.parent._request(**kw)
 

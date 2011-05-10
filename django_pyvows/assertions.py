@@ -8,7 +8,8 @@
 # http://www.opensource.org/licenses/mit-license
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
-from pyvows import Vows
+from pyvows import Vows, expect
+from django.http import HttpResponse
 
 class Url(object):
     def __init__(self, context, path):
@@ -46,3 +47,12 @@ def verify_url_is_mapped_to_method(topic, method=None, assert_method_as_well=Fal
     assert found, "Expected url(%s) to be mapped but it wasn't"
     if assert_method_as_well:
         assert matches_method, "Expected url(%s) to match method(%s), but it didn't"
+
+@Vows.assertion
+def to_be_http_response(topic):
+    expect(topic).to_be_instance_of(HttpResponse)
+
+@Vows.assertion
+def to_have_contents_of(topic, expected):
+    expect(topic.content).to_be_like(expected)
+
