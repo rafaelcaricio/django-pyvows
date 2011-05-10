@@ -15,7 +15,7 @@ from django.conf.urls.defaults import patterns, include, url
 # admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^$', 'sandbox.views.home', name='home'),
+    url(r'^$', 'sandbox.main.views.home', name='home'),
     # url(r'^sandbox/', include('sandbox.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
