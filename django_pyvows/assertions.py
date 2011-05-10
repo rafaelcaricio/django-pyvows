@@ -27,7 +27,7 @@ class Template(object):
         self.doc = None
 
     def load(self):
-        if not self.doc:
+        if self.doc is None:
             self.doc = fromstring(render_to_string(self.template_name, self.context))
         return self.doc
 

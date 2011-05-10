@@ -31,6 +31,9 @@ class TemplateVows(DjangoContext):
         def should_not_have_a_hello_div(self, topic):
             expect(topic).Not.to_contain('div.hello')
 
+        def should_be_index_file(self, topic):
+            expect(unicode(topic)).to_equal('index.html')
+
         class Paragraph(DjangoSubContext):
 
             def topic(self, template):
