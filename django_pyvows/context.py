@@ -11,7 +11,7 @@
 import os
 
 from pyvows import Vows
-from django_pyvows.assertions import Url
+from django_pyvows.assertions import Url, Template
 
 class DjangoContext(Vows.Context):
 
@@ -31,8 +31,14 @@ class DjangoContext(Vows.Context):
     def _url(self, path):
         return Url(self, path)
 
+    def _template(self, template_name, context):
+        return Template(template_name, context)
+
 class DjangoSubContext(Vows.Context):
 
     def _url(self, path):
         return self.parent._url(path)
+
+    def _template(self, template_name, context={}):
+        return self.parent._template(template_name, context)
 
