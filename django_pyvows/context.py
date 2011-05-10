@@ -12,17 +12,19 @@ import os
 
 from pyvows import Vows
 from django_pyvows.assertions import Url
+from django_pyvows.model_assertions import Model
 from django.http import HttpRequest
 
 class DjangoContext(Vows.Context):
+    @classmethod
+    def _start_environment(cls, settings_path):
+        if not settings_path:
+            raise RuntimeError('The settings_path argument is required.')
+        os.environ['DJANGO_SETTINGS_MODULE'] = settings_path
 
     def __init__(self, parent):
         super(DjangoContext, self).__init__(parent)
-        if not hasattr(self, '_get_settings'):
-            raise RuntimeError('The context %s needs a _get_settings method that returns the DJANGO_SETTINGS_MODULE environment variable value.' % self.__class__.__name__)
-        os.environ['DJANGO_SETTINGS_MODULE'] = self._get_settings()
 
-        #Gotta set settings environment variable first
         from django.test.utils import setup_test_environment #, teardown_test_environment
 
         setup_test_environment()
@@ -33,11 +35,5 @@ class DjangoContext(Vows.Context):
     def _request(self, **kw):
         return HttpRequest(**kw)
 
-class DjangoSubContext(Vows.Context):
-
-    def _url(self, path):
-        return self.parent._url(path)
-
-    def _request(self, **kw):
-        return self.parent._request(**kw)
-
+    def _model(self, model_class):
+        return Model(self, model_class)

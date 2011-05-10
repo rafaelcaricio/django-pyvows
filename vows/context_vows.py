@@ -12,14 +12,11 @@ from pyvows import Vows, expect
 
 from django_pyvows.context import DjangoContext
 
-class DjangoFailedContext(DjangoContext):
-    pass
-
 @Vows.batch
 class ContextTest(Vows.Context):
 
     def topic(self):
-        return DjangoFailedContext(self)
+        return DjangoContext._start_environment(None)
 
     def should_be_an_error(self, topic):
         expect(topic).to_be_an_error()
@@ -28,4 +25,4 @@ class ContextTest(Vows.Context):
         expect(topic).to_be_an_error_like(RuntimeError)
 
     def should_have_nice_error_message(self, topic):
-        expect(topic).to_have_an_error_message_of('The context DjangoFailedContext needs a _get_settings method that returns the DJANGO_SETTINGS_MODULE environment variable value.')
+        expect(topic).to_have_an_error_message_of('The settings_path argument is required.')

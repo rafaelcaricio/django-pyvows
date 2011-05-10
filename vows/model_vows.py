@@ -13,18 +13,17 @@ from django_pyvows.context import DjangoContext
 
 DjangoContext._start_environment('sandbox.settings')
 
-from sandbox.main.views import home
+from sandbox.main.models import StringModel
 
 @Vows.batch
-class ViewVows(Vows.Context):
+class ModelVows(Vows.Context):
 
-    class Home(DjangoContext):
+    class MainModel(DjangoContext):
 
         def topic(self):
-            return home(self._request())
+            return self._model(StringModel)
 
-        def should_be_instance_of_http_response(self, topic):
-            expect(topic).to_be_http_response()
+        def should_be_cruddable_when_model_only_has_a_string(self, topic):
+            expect(topic).to_be_cruddable()
 
-        def should_be_hello_world(self, topic):
-            expect(topic).to_have_contents_of('Hello World')
+
