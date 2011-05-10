@@ -33,6 +33,10 @@ def to_be_cruddable(topic):
 
         assert getattr(updated, field.name) != getattr(instance, field.name), "The instance should have been updated but the field %s is the same in both the original instance and the updated one (%s)." % (field.name, getattr(updated, field.name))
 
+    topic.model.objects.delete(id=instance.id)
+    object_count = topic.mode.objects.count()
+    assert object_count == 0, "Object should have been deleted, but it wasn't (count: %d)" % object_count
+
 def __create_instance(topic):
     import django.db.models.fields as fields
     arguments = {}
