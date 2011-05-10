@@ -26,4 +26,9 @@ class ModelVows(Vows.Context):
         def should_be_cruddable_when_model_only_has_a_string(self, topic):
             expect(topic).to_be_cruddable()
 
+        def should_be_cruddable_when_string_passed(self, topic):
+            expect(topic).to_be_cruddable({
+                'name': 'something'
+            })
+
 

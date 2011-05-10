@@ -16,19 +16,25 @@ class Model(object):
         self.model = model
 
 @Vows.assertion
-def to_be_cruddable(topic):
+def to_be_cruddable(topic, defaults={}):
     import django.db.models.fields as fields
-    instance = __create_instance(topic)
+    instance = __create_or_update_instance(topic, None, defaults)
 
     assert instance, "An instance could not be created for model %s" % topic.model.__name__
 
     retrieved = topic.model.objects.get(id=instance.id)
     assert retrieved.id == instance.id, "An instance could not be retrieved for model %s with id %d" % (topic.model.__name__, instance.id)
 
-    updated = __update_instance(topic, retrieved)
+    for key, value in defaults.iteritems():
+        assert value == getattr(retrieved, key), "The default specified value of '%s' should have been set in the '%s' property of the instance but it was not" % (value, key)
+
+    updated = __create_or_update_instance(topic, retrieved, defaults)
 
     for field, value in topic.model._meta._field_cache:
         if field.__class__ == fields.AutoField:
+            continue
+
+        if field.name in defaults:
             continue
 
         assert getattr(updated, field.name) != getattr(instance, field.name), "The instance should have been updated but the field %s is the same in both the original instance and the updated one (%s)." % (field.name, getattr(updated, field.name))
@@ -37,33 +43,28 @@ def to_be_cruddable(topic):
     object_count = topic.model.objects.count()
     assert object_count == 0, "Object should have been deleted, but it wasn't (count: %d)" % object_count
 
-def __create_instance(topic):
+def __create_or_update_instance(topic, instance, defaults):
     import django.db.models.fields as fields
     arguments = {}
     for field, value in topic.model._meta._field_cache:
         if field.__class__ == fields.AutoField:
             continue
 
-        if field.__class__ == fields.CharField:
-            __add_char_value_for(field, None, arguments)
-
-    return topic.model.objects.create(**arguments)
-
-def __update_instance(topic, instance):
-    import django.db.models.fields as fields
-    arguments = {}
-    for field, value in topic.model._meta._field_cache:
-        if field.__class__ == fields.AutoField:
+        if field.name in defaults:
+            arguments[field.name] = defaults[field.name]
             continue
 
         if field.__class__ == fields.CharField:
             __add_char_value_for(field, instance, arguments)
 
-    for key, value in arguments.iteritems():
-        setattr(instance, key, value)
+    if instance:
+        for key, value in arguments.iteritems():
+            setattr(instance, key, value)
 
-    instance.save()
-    return instance
+        instance.save()
+        return instance
+
+    return topic.model.objects.create(**arguments)
 
 def __add_char_value_for(field, instance, arguments):
     value = "monty python"
