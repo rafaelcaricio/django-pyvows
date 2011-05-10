@@ -9,11 +9,11 @@
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
 
-from django.core.management.base import BaseCommand
+#from django.core.management.base import BaseCommand
 
 
-class RunVowsCommand(BaseCommand):
-    help = u'Run all vows for this project.'
+#class RunVowsCommand(BaseCommand):
+    #help = u'Run all vows for this project.'
 
-    def handle(self, *args, **kwargs):
-        pass
+    #def handle(self, *args, **kwargs):
+        #pass
