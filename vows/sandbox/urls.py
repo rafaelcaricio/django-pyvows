@@ -16,6 +16,8 @@ from django.conf.urls.defaults import patterns, include, url
 
 urlpatterns = patterns('',
     url(r'^$', 'sandbox.main.views.home', name='home'),
+    url(r'^say/$', 'sandbox.main.views.say_hello', name='say_hello'),
+
     # url(r'^sandbox/', include('sandbox.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

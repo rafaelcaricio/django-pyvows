@@ -14,9 +14,6 @@ from django_pyvows.assertions import *
 @Vows.batch
 class HttpContextVows(DjangoHTTPContext):
 
-    def get_settings(self):
-        return "sandbox.settings"
-
     def topic(self):
         self.start_server()
         return self.get("/")
@@ -34,4 +31,20 @@ class HttpContextVows(DjangoHTTPContext):
 
         def should_be_possible_to_pass_get_parameters(self, topic):
             expect(topic.getcode()).to_equal(200)
+
+    class AskMyName(DjangoContext):
+
+        def topic(self):
+            return self.get('/say/')
+
+        def should_ask_for_my_name(self, topic):
+            expect(topic.read()).to_equal('What\'s your name?')
+
+    class SayHelloToMe(DjangoContext):
+
+        def topic(self):
+            return self.get('/say/?name=Rafael')
+
+        def should_say_hello_to_me(self, topic):
+            expect(topic.read()).to_equal('Hello, Rafael!')
 

@@ -11,5 +11,9 @@
 from django.http import HttpResponse
 
 def home(request):
-    #print request
     return HttpResponse('hello world')
+
+def say_hello(request):
+    if not 'name' in request.GET:
+        return HttpResponse("What's your name?")
+    return HttpResponse("Hello, %s!" % request.GET['name'])
