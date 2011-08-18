@@ -11,12 +11,12 @@
 from pyvows import Vows, expect
 from django_pyvows.context import DjangoContext
 
-DjangoContext._start_environment('sandbox.settings')
+DjangoContext._start_environment("sandbox.settings")
 
 from sandbox.main.views import home
 
 @Vows.batch
-class ViewVows(Vows.Context):
+class ViewVows(DjangoContext):
 
     class Home(DjangoContext):
 

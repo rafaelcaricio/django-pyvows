@@ -12,11 +12,11 @@ import os
 
 from pyvows import Vows
 
-from django_pyvows.assertions import Url
-from django_pyvows.model_assertions import Model
+from django_pyvows.assertions import Url, Model, Template
 from django.http import HttpRequest
 
 class DjangoContext(Vows.Context):
+
     @classmethod
     def _start_environment(cls, settings_path):
         if not settings_path:
@@ -25,26 +25,20 @@ class DjangoContext(Vows.Context):
 
     def __init__(self, parent):
         super(DjangoContext, self).__init__(parent)
+        if not parent:
+            DjangoContext._start_environment(self._get_settings())
 
     def _get_settings(self):
-        return 'settings'
+        if 'DJANGO_SETTINGS_MODULE' in os.environ:
+            return os.environ['DJANGO_SETTINGS_MODULE']
+        else:
+            return 'settings'
 
     def _url(self, path):
         return Url(self, path)
 
     def _template(self, template_name, context):
         return Template(template_name, context)
-
-class DjangoSubContext(Vows.Context):
-
-    def _url(self, path):
-        return self.parent._url(path)
-
-    def _template(self, template_name, context={}):
-        return self.parent._template(template_name, context)
-
-    def _url(self, path):
-        return Url(self, path)
 
     def _request(self, **kw):
         return HttpRequest(**kw)

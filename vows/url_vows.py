@@ -9,18 +9,18 @@
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
 from pyvows import Vows, expect
-from django_pyvows.context import DjangoContext, DjangoSubContext
-import django_pyvows.assertions
+
+from django_pyvows.context import DjangoContext
+from django_pyvows.assertions import *
+
+DjangoContext._start_environment("sandbox.settings")
 
 from sandbox.main.views import home
 
 @Vows.batch
 class UrlVows(DjangoContext):
 
-    def _get_settings(self):
-        return 'sandbox.settings'
-
-    class Home(DjangoSubContext):
+    class Home(DjangoContext):
 
         def topic(self):
             return self._url('^$')

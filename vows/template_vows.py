@@ -9,8 +9,9 @@
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
 from pyvows import Vows, expect
-from django_pyvows.context import DjangoContext, DjangoSubContext
-import django_pyvows.assertions
+
+from django_pyvows.context import DjangoContext
+from django_pyvows.assertions import *
 
 @Vows.batch
 class TemplateVows(DjangoContext):
@@ -18,7 +19,7 @@ class TemplateVows(DjangoContext):
     def _get_settings(self):
         return 'sandbox.settings'
 
-    class IndexTemplate(DjangoSubContext):
+    class IndexTemplate(DjangoContext):
 
         def topic(self):
             return self._template('index.html', {
@@ -34,7 +35,7 @@ class TemplateVows(DjangoContext):
         def should_be_index_file(self, topic):
             expect(unicode(topic)).to_equal('index.html')
 
-        class Paragraph(DjangoSubContext):
+        class Paragraph(DjangoContext):
 
             def topic(self, template):
                 return template.get_text('p.my-text')
