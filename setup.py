@@ -8,12 +8,15 @@
 # http://www.opensource.org/licenses/mit-license
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
+import os
 from setuptools import setup
-from django_pyvows import __version__
+from imp import load_source
+
+version = load_source('version', os.path.join("django_pyvows", "version.py"))
 
 setup(
     name = 'django-pyvows',
-    version = __version__,
+    version = '.'.join([str(item) for item in version.__version__]),
     description = "django-pyvows are pyvows extensions to django web framework.",
     long_description = """
 django-pyvows are pyvows extensions to django web framework.
