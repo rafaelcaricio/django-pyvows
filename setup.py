@@ -13,7 +13,7 @@ from django_pyvows import __version__
 
 setup(
     name = 'django-pyvows',
-    version = '.'.join([str(item) for item in __version__]),
+    version = __version__,
     description = "django-pyvows are pyvows extensions to django web framework.",
     long_description = """
 django-pyvows are pyvows extensions to django web framework.
