@@ -174,11 +174,11 @@ class DjangoContext(Vows.Context):
     def model(self, model_class):
         return Model(self, model_class)
 
-    def get(self, url):
-        return urllib2.urlopen(url)
+    def get(self, path):
+        return urllib2.urlopen(self.get_url(path))
 
-    def post(self, url, params):
-        return urllib2.urlopen(url, data=params)
+    def post(self, path, params):
+        return urllib2.urlopen(self.get_url(path), data=params)
 
     def get_url(self, path):
         ctx = self.parent
@@ -186,7 +186,7 @@ class DjangoContext(Vows.Context):
             if hasattr(ctx, 'get_url'):
                 return ctx.get_url(path)
             ctx = ctx.parent
-        return None
+        return ""
 
 class DjangoHTTPContext(DjangoContext):
 
