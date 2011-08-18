@@ -19,7 +19,7 @@ class HttpContextVows(DjangoHTTPContext):
 
     def topic(self):
         self.start_server()
-        return self.get(self.get_url("/"))
+        return self.get("/")
 
     def the_return_code_should_be_200(self, topic):
         expect(topic.getcode()).to_equal(200)
@@ -30,7 +30,7 @@ class HttpContextVows(DjangoHTTPContext):
     class Methods(DjangoContext):
 
         def topic(self):
-            return self.get(self.get_url('/?name=rafael'))
+            return self.get('/?name=rafael')
 
         def should_be_possible_to_pass_get_parameters(self, topic):
             expect(topic.getcode()).to_equal(200)
