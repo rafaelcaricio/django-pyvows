@@ -13,7 +13,7 @@ from pyvows import Vows, expect
 from django_pyvows.context import DjangoContext
 from django_pyvows.assertions import *
 
-DjangoContext._start_environment("sandbox.settings")
+DjangoContext.start_environment("sandbox.settings")
 
 from sandbox.main.views import home
 
@@ -23,7 +23,7 @@ class UrlVows(DjangoContext):
     class Home(DjangoContext):
 
         def topic(self):
-            return self._url('^$')
+            return self.url('^$')
 
         def should_have_home_url_mapped(self, topic):
             expect(topic).to_be_mapped()

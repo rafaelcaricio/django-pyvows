@@ -11,7 +11,7 @@
 from pyvows import Vows, expect
 from django_pyvows.context import DjangoContext
 
-DjangoContext._start_environment("sandbox.settings")
+DjangoContext.start_environment("sandbox.settings")
 
 from sandbox.main.models import StringModel
 
@@ -21,7 +21,7 @@ class ModelVows(DjangoContext):
     class MainModel(DjangoContext):
 
         def topic(self):
-            return self._model(StringModel)
+            return self.model(StringModel)
 
         def should_be_cruddable_when_model_only_has_a_string(self, topic):
             expect(topic).to_be_cruddable()

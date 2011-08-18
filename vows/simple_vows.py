@@ -22,7 +22,7 @@ class DefaultsVows(DjangoContext):
 
     def topic(self):
         del os.environ['DJANGO_SETTINGS_MODULE']
-        return self._get_settings()
+        return self.get_settings()
 
     def should_be_using_the_default_settings(self, topic):
         expect(topic).to_equal('settings')

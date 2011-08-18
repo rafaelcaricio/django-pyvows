@@ -22,7 +22,7 @@ class TemplateVows(DjangoContext):
     class IndexTemplate(DjangoContext):
 
         def topic(self):
-            return self._template('index.html', {
+            return self.template('index.html', {
                 'some': 'thing'
             })
 

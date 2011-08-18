@@ -11,7 +11,7 @@
 from pyvows import Vows, expect
 from django_pyvows.context import DjangoContext
 
-DjangoContext._start_environment("sandbox.settings")
+DjangoContext.start_environment("sandbox.settings")
 
 from sandbox.main.views import home
 
@@ -21,7 +21,7 @@ class ViewVows(DjangoContext):
     class Home(DjangoContext):
 
         def topic(self):
-            return home(self._request())
+            return home(self.request())
 
         def should_be_instance_of_http_response(self, topic):
             expect(topic).to_be_http_response()

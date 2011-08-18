@@ -9,52 +9,16 @@
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
 import os
-
-from pyvows import Vows
-
-from django_pyvows.assertions import Url, Model, Template
-from django.http import HttpRequest
-
-class DjangoContext(Vows.Context):
-
-    @classmethod
-    def _start_environment(cls, settings_path):
-        if not settings_path:
-            raise RuntimeError('The settings_path argument is required.')
-        os.environ['DJANGO_SETTINGS_MODULE'] = settings_path
-
-    def __init__(self, parent):
-        super(DjangoContext, self).__init__(parent)
-        if not parent:
-            DjangoContext._start_environment(self._get_settings())
-
-    def _get_settings(self):
-        if 'DJANGO_SETTINGS_MODULE' in os.environ:
-            return os.environ['DJANGO_SETTINGS_MODULE']
-        else:
-            return 'settings'
-
-    def _url(self, path):
-        return Url(self, path)
-
-    def _template(self, template_name, context):
-        return Template(template_name, context)
-
-    def _request(self, **kw):
-        return HttpRequest(**kw)
-
-    def _model(self, model_class):
-        return Model(self, model_class)
-
-
 import sys
 import urllib2
-from BaseHTTPServer import HTTPServer
-from BaseHTTPServer import BaseHTTPRequestHandler
 from threading import Thread
+from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
+from pyvows import Vows
+from django.http import HttpRequest
 from django.core.handlers.wsgi import WSGIHandler
 
+from django_pyvows.assertions import Url, Model, Template
 from django_pyvows import version
 
 class WSGIRequestHandler(BaseHTTPRequestHandler):
@@ -159,41 +123,88 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
         if self.parse_request():
             return self.run_wsgi()
 
-    def log_request(self, code='-', size='-'):
+    def log_request(self, *args, **kwargs):
         pass
 
     def log_error(self, *args):
         pass
 
-    def log_message(self, format, *args):
+    def log_message(self, *args):
         pass
 
-class PyVowsDjangoServer(HTTPServer, object):
+class DjangoServer(HTTPServer, object):
 
-    def __init__(self, host, port, app):
+    def __init__(self, host, port):
         HTTPServer.__init__(self, (host, int(port)), WSGIRequestHandler)
-        self.app = app
+        self.app = WSGIHandler()
 
-class DjangoHttpContext(DjangoContext):
 
-    def _start_server(self):
-        self.server = PyVowsDjangoServer(self._get_http_host(), self._get_http_port(), WSGIHandler())
+class DjangoContext(Vows.Context):
+
+    @classmethod
+    def start_environment(cls, settings_path):
+        if not settings_path:
+            raise RuntimeError('The settings_path argument is required.')
+        os.environ['DJANGO_SETTINGS_MODULE'] = settings_path
+
+    def __init__(self, parent):
+        super(DjangoContext, self).__init__(parent)
+        self.port = 8080
+        self.host = '127.0.0.1'
+        self.ignore('get_settings', 'template', 'request', 'model', 'url', 'start_environment', 'get', 'post')
+
+    def setup(self):
+        DjangoContext.start_environment(self.get_settings())
+
+    def get_settings(self):
+        if 'DJANGO_SETTINGS_MODULE' in os.environ:
+            return os.environ['DJANGO_SETTINGS_MODULE']
+        else:
+            return 'settings'
+
+    def url(self, path):
+        return Url(self, path)
+
+    def template(self, template_name, context):
+        return Template(template_name, context)
+
+    def request(self, **kw):
+        return HttpRequest(**kw)
+
+    def model(self, model_class):
+        return Model(self, model_class)
+
+    def get(self, url):
+        return urllib2.urlopen(url)
+
+    def post(self, url, params):
+        return urllib2.urlopen(url, data=params)
+
+    def get_url(self, path):
+        ctx = self.parent
+        while ctx:
+            if hasattr(ctx, 'get_url'):
+                return ctx.get_url(path)
+            ctx = ctx.parent
+        return None
+
+class DjangoHTTPContext(DjangoContext):
+
+    def start_server(self):
+        self.server = DjangoServer(self.host, self.port)
         self.server.server_activate()
-
-    def _get_http_port(self):
-        return 8080
-
-    def _get_http_host(self):
-        return '127.0.0.1'
-
-    def _get_url(self, path):
-        return 'http://%s:%d%s' % (self._get_http_host(), self._get_http_port(), path)
-
-    def _get(self, path):
         def make_response():
-            self.server.handle_request()
-        Thread(target=make_response).start()
-        return urllib2.urlopen(self._get_url(path))
+            while True:
+                self.server.handle_request()
+        self.thr = Thread(target=make_response)
+        self.thr.daemon = True
+        self.thr.start()
 
-    def _post(self, url, params):
-        pass
+    def __init__(self, parent):
+        super(DjangoHTTPContext, self).__init__(parent)
+        self.port = 8080
+        self.host = '127.0.0.1'
+        self.ignore('start_server', 'port', 'host', 'get_url')
+
+    def get_url(self, path):
+        return 'http://%s:%d%s' % (self.host, self.port, path)

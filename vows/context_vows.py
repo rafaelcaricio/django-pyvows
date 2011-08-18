@@ -16,7 +16,7 @@ from django_pyvows.context import DjangoContext
 class ContextTest(Vows.Context):
 
     def topic(self):
-        return DjangoContext._start_environment(None)
+        return DjangoContext.start_environment(None)
 
     def should_be_an_error(self, topic):
         expect(topic).to_be_an_error()
