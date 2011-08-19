@@ -37,9 +37,5 @@ as you usually would, start the server and call your project urls:
         def should_return_the_correct_response_type(self, topic):
             expect(topic.headers.type).to_equal("text/html")
 
-For work properly you need to configure your django settings module overriding
-the method `get_settings` from DjangoHTTPContext. If you settings module are in python
-path as I can import them simple doing `import settings` then are no need to override 
-the `get_settings` method. We have some other methods that you can use to personalize you 
-testing context, but I will explain after. Keep in touch to get some new things that I plan 
-to implement.
+To work you only need to override the `get_settings` method from DjangoHTTPContext to 
+return the path of your settings module. The default `get_settings` returns `"settings"`.
