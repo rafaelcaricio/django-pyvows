@@ -137,6 +137,14 @@ class DjangoServer(HTTPServer, object):
         HTTPServer.__init__(self, (host, int(port)), WSGIRequestHandler)
         self.app = WSGIHandler()
 
+    def start(self):
+        self.server_activate()
+        def make_response():
+            while True:
+                self.handle_request()
+        self.thr = Thread(target=make_response)
+        self.thr.daemon = True
+        self.thr.start()
 
 class DjangoContext(Vows.Context):
 
@@ -150,7 +158,7 @@ class DjangoContext(Vows.Context):
         super(DjangoContext, self).__init__(parent)
         self.port = 8080
         self.host = '127.0.0.1'
-        self.ignore('get_settings', 'template', 'request', 'model', 'url', 'start_environment', 'get', 'post')
+        self.ignore('get_settings', 'template', 'request', 'model', 'url', 'start_environment', 'get_url', 'get', 'post')
 
     def setup(self):
         DjangoContext.start_environment(self.get_settings())
@@ -191,19 +199,13 @@ class DjangoHTTPContext(DjangoContext):
 
     def start_server(self):
         self.server = DjangoServer(self.host, self.port)
-        self.server.server_activate()
-        def make_response():
-            while True:
-                self.server.handle_request()
-        self.thr = Thread(target=make_response)
-        self.thr.daemon = True
-        self.thr.start()
+        self.server.start()
 
     def __init__(self, parent):
         super(DjangoHTTPContext, self).__init__(parent)
         self.port = 3331
         self.host = '127.0.0.1'
-        self.ignore('start_server', 'port', 'host', 'get_url')
+        self.ignore('start_server', 'port', 'host')
 
     def get_url(self, path):
         return 'http://%s:%d%s' % (self.host, self.port, path)
