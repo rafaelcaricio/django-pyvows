@@ -19,7 +19,6 @@ from django.http import HttpRequest
 from django.core.handlers.wsgi import WSGIHandler
 
 from django_pyvows.assertions import Url, Model, Template
-from django_pyvows import version
 
 class WSGIRequestHandler(BaseHTTPRequestHandler):
     """A request handler that implements WSGI dispatching."""
@@ -202,7 +201,7 @@ class DjangoHTTPContext(DjangoContext):
 
     def __init__(self, parent):
         super(DjangoHTTPContext, self).__init__(parent)
-        self.port = 8080
+        self.port = 3331
         self.host = '127.0.0.1'
         self.ignore('start_server', 'port', 'host', 'get_url')
 
