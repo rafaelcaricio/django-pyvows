@@ -11,7 +11,7 @@
 
 import sys
 import urllib2
-from threading import Thread
+from threading import Thread, local, current_thread
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
 from pyvows import Vows
@@ -137,9 +137,14 @@ class DjangoServer(HTTPServer, object):
         HTTPServer.__init__(self, (host, int(port)), WSGIRequestHandler)
         self.app = WSGIHandler()
 
-    def start(self):
+    def start(self, settings):
         self.server_activate()
         def make_response():
+            thread = current_thread()
+            if not hasattr(thread, "settings"):
+                thread.settings = local()
+                for key, value in settings.items():
+                    setattr(thread.settings, key, value)
             while True:
                 self.handle_request()
         self.thr = Thread(target=make_response)

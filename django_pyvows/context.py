@@ -17,6 +17,7 @@ from django.http import HttpRequest
 from django_pyvows import http_helpers
 from django_pyvows.assertions import Url, Model, Template
 from django_pyvows.server import DjangoServer
+from django_pyvows.settings_manager import settings_tracker
 
 DEFAULT_PORT = 3331
 DEFAULT_HOST = '127.0.0.1'
@@ -28,6 +29,7 @@ class DjangoContext(Vows.Context):
         if not settings_path:
             raise RuntimeError('The settings_path argument is required.')
         os.environ['DJANGO_SETTINGS_MODULE'] = settings_path
+        settings_tracker.install()
 
     def __init__(self, parent):
         super(DjangoContext, self).__init__(parent)
@@ -78,7 +80,7 @@ class DjangoHTTPContext(DjangoContext):
 
         self.address = (host, port)
         self.server = DjangoServer(host, port)
-        self.server.start()
+        self.server.start(self.settings)
 
     def __init__(self, parent):
         super(DjangoHTTPContext, self).__init__(parent)

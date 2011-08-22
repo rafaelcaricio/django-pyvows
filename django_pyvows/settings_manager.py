@@ -9,25 +9,34 @@
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
 import sys
+from threading import current_thread
 
-class ModulesTracker(object):
+class SettingsTracker(object):
 
     def install(self):
-        self.previous_modules = sys.modules.copy()
-        self.real_import = __builtins__['__import__']
-        __builtins__['__import__'] = self._import
-        self.new_modules = {}
+        actual_import = __builtins__['__import__']
+        if actual_import != self._import:
+            self.real_import = actual_import
+            __builtins__['__import__'] = self._import
 
     def _import(self, name, globals=None, locals=None, fromlist=[], level=-1):
         result = apply(self.real_import, (name, globals, locals, fromlist, level))
-        self.new_modules[name] = 1
+        if name == 'django.conf':
+            result.settings = VowsSettings(result.settings)
+        elif name == "django" and 'conf' in (fromlist or []):
+            result.conf.settings = VowsSettings(result.settings)
         return result
 
-    def reload(self):
-        for modname in self.new_modules.keys():
-            if not self.previous_modules.has_key(modname):
-                del(sys.modules[modname])
+class VowsSettings(object):
 
-    def uninstall(self):
-        __builtins__['__import__'] = self.real_import
+    def __init__(self, original_settings):
+        self.original_settings = original_settings
 
+    def __getattr__(self, attr_name):
+        thread = current_thread()
+        if hasattr(thread, "settings"):
+            if hasattr(thread.settings, attr_name):
+                return getattr(thread.settings, attr_name)
+        return getattr(self.original_settings, attr_name)
+
+settings_tracker = SettingsTracker()
