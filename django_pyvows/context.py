@@ -60,7 +60,7 @@ class DjangoContext(Vows.Context):
         return urllib2.urlopen(self.get_url(path))
 
     def post(self, path, params):
-        return urllib2.urlopen(self.get_url(path), data=params)
+        return urllib2.urlopen(self.get_url(path), data=urllib2.urlencode(params))
 
     def get_url(self, path):
         ctx = self.parent
