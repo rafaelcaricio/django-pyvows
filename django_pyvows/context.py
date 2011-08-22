@@ -10,6 +10,7 @@
 
 import os
 import re
+import urllib
 import urllib2
 
 from pyvows import Vows
@@ -60,7 +61,7 @@ class DjangoContext(Vows.Context):
         return urllib2.urlopen(self.get_url(path))
 
     def post(self, path, params):
-        return urllib2.urlopen(self.get_url(path), data=urllib2.urlencode(params))
+        return urllib2.urlopen(self.get_url(path), data=urllib.urlencode(params))
 
     def get_url(self, path):
         ctx = self.parent
