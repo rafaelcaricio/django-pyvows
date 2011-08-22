@@ -18,6 +18,8 @@ from django.http import HttpRequest
 from django_pyvows.assertions import Url, Model, Template
 from django_pyvows.server import DjangoServer
 
+DEFAULT_PORT = 3331
+DEFAULT_HOST = '127.0.0.1'
 
 class DjangoContext(Vows.Context):
 
@@ -29,12 +31,7 @@ class DjangoContext(Vows.Context):
 
     def __init__(self, parent):
         super(DjangoContext, self).__init__(parent)
-        if parent:
-            self.port = parent.port
-            self.host = parent.host
-        else:
-            self.port = 3331
-            self.host = '127.0.0.1'
+
         self.ignore('get_settings', 'template', 'request', 'model', 'url',
                 'start_environment', 'port', 'host', 'get_url', 'get', 'post')
 
@@ -75,13 +72,37 @@ class DjangoContext(Vows.Context):
 
 class DjangoHTTPContext(DjangoContext):
 
-    def start_server(self):
-        self.server = DjangoServer(self.host, self.port)
+    def start_server(self, host=None, port=None):
+        if not port: port = DEFAULT_PORT
+        if not host: host = DEFAULT_HOST
+
+        self.address = (host, port)
+        self.server = DjangoServer(host, port)
         self.server.start()
 
     def __init__(self, parent):
         super(DjangoHTTPContext, self).__init__(parent)
         self.ignore('start_server', 'settings')
+
+    @property
+    def host(self):
+        if hasattr(self, 'address'):
+            return self.address[0]
+
+        if self.parent and hasattr(self.parent, 'host'):
+            return self.parent.host
+
+        raise RuntimeError('Host could not be found in the context or any of its parents')
+
+    @property
+    def port(self):
+        if hasattr(self, 'address'):
+            return self.address[1]
+
+        if self.parent and hasattr(self.parent, 'port'):
+            return self.parent.port
+
+        raise RuntimeError('Port could not be found in the context or any of its parents')
 
     def get_url(self, path):
         if re.match('^https?:\/\/', path):
