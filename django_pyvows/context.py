@@ -10,12 +10,11 @@
 
 import os
 import re
-import urllib
-import urllib2
 
 from pyvows import Vows
 from django.http import HttpRequest
 
+from django_pyvows import http_helpers
 from django_pyvows.assertions import Url, Model, Template
 from django_pyvows.server import DjangoServer
 
@@ -58,10 +57,10 @@ class DjangoContext(Vows.Context):
         return Model(self, model_class)
 
     def get(self, path):
-        return urllib2.urlopen(self.get_url(path))
+        return http_helpers.get(self.get_url(path))
 
     def post(self, path, params):
-        return urllib2.urlopen(self.get_url(path), data=urllib.urlencode(params))
+        return http_helpers.post(self.get_url(path), params)
 
     def get_url(self, path):
         ctx = self.parent

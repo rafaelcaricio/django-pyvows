@@ -25,6 +25,9 @@ def say_hello(request):
         name = 'guess'
     return HttpResponse("Hello, %s!" % name)
 
+def post_it(request):
+    return HttpResponse(request.POST['value'])
+
 def get_setting(request, attr):
     return HttpResponse(str(getattr(settings, attr)))
 

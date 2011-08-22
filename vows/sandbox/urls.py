@@ -17,6 +17,7 @@ from django.conf.urls.defaults import patterns, include, url
 urlpatterns = patterns('',
     url(r'^$', 'sandbox.main.views.home', name='home'),
     url(r'^say/$', 'sandbox.main.views.say_hello', name='say_hello'),
+    url(r'^post_it/$', 'sandbox.main.views.post_it', name='post_it'),
     url(r'^settings/(?P<attr>[\w_]+)/?$', 'sandbox.main.views.get_setting', name='get_setting'),
 
     # url(r'^sandbox/', include('sandbox.foo.urls')),

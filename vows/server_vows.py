@@ -48,3 +48,11 @@ class HttpContextVows(DjangoHTTPContext):
         def should_say_hello_to_me(self, topic):
             expect(topic.read()).to_equal('Hello, Rafael!')
 
+    class PostIt(DjangoContext):
+
+        def topic(self):
+            return self.post('/post_it/', {'value': 'posted!'})
+
+        def should_be_posted(self, topic):
+            expect(topic.read()).to_equal('posted!')
+

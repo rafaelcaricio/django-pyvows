@@ -77,10 +77,10 @@ def post(url, data):
     form = MultiPartForm()
 
     for field, value in data.iteritems():
-        if isinstance(value, basestring):
-            form.add_field(field, value)
-        else:
+        if hasattr(value, "read"):
             form.add_file(field, value.name, value)
+        else:
+            form.add_field(field, str(value))
 
     request = urllib2.Request(url)
     body = str(form)
