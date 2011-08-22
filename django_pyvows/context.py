@@ -31,7 +31,7 @@ class DjangoContext(Vows.Context):
 
     def __init__(self, parent):
         super(DjangoContext, self).__init__(parent)
-
+        self.settings = {}
         self.ignore('get_settings', 'template', 'request', 'model', 'url',
                 'start_environment', 'port', 'host', 'get_url', 'get', 'post')
 
