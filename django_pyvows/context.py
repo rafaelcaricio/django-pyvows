@@ -9,6 +9,7 @@
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
 import os
+import re
 import urllib2
 
 from pyvows import Vows
@@ -28,9 +29,14 @@ class DjangoContext(Vows.Context):
 
     def __init__(self, parent):
         super(DjangoContext, self).__init__(parent)
-        self.port = 8080
-        self.host = '127.0.0.1'
-        self.ignore('get_settings', 'template', 'request', 'model', 'url', 'start_environment', 'get_url', 'get', 'post')
+        if parent:
+            self.port = parent.port
+            self.host = parent.host
+        else:
+            self.port = 3331
+            self.host = '127.0.0.1'
+        self.ignore('get_settings', 'template', 'request', 'model', 'url',
+                'start_environment', 'port', 'host', 'get_url', 'get', 'post')
 
     def setup(self):
         DjangoContext.start_environment(self.get_settings())
@@ -75,9 +81,10 @@ class DjangoHTTPContext(DjangoContext):
 
     def __init__(self, parent):
         super(DjangoHTTPContext, self).__init__(parent)
-        self.port = 3331
-        self.host = '127.0.0.1'
-        self.ignore('start_server', 'port', 'host')
+        self.ignore('start_server', 'settings')
 
     def get_url(self, path):
+        if re.match('^https?:\/\/', path):
+            return path
         return 'http://%s:%d%s' % (self.host, self.port, path)
+
