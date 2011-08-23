@@ -11,33 +11,43 @@
 from pyvows import Vows, expect
 
 from django_pyvows.context import DjangoContext, DjangoHTTPContext
-#from django_pyvows.settings_manager import settings_tracker
+from django_pyvows.settings_manager import settings_tracker, VowsSettings
 
 
 @Vows.batch
 class SettingsVows(DjangoContext):
 
-    #class WhenIUseTheModulesTracker(DjangoContext):
+    class WhenIUseTheSettingsTracker(DjangoContext):
 
-        #def topic(self):
-            #settings_tracker.install()
-            #import to_test
-            #return modules_tracker
+        def topic(self):
+            settings_tracker.install()
 
-        #def should_track_the_new_imported_module(self, topic):
-            #expect('to_test' in topic.new_modules).to_be_true()
+        class WhenImportFromDjangoConf(DjangoContext):
 
-        #class WhenIReloadTheImportedModule(DjangoContext):
+            def topic(self):
+                from django.conf import settings
+                return settings
 
-            #def topic(self, modules_tracker):
-                #import to_test
-                #imported_first_time_at = to_test.imported_at
-                #modules_tracker.reload()
-                #import to_test
-                #return (modules_tracker, imported_first_time_at, to_test.imported_at)
+            def should_be_the_vows_settings(self, topic):
+                expect(topic).to_be_instance_of(VowsSettings)
 
-            #def should_be_different_instances(self, topic):
-                #expect(topic[1]).not_to_equal(topic[2])
+        class WhenIImportOnlyConfAndThenUseSettings(DjangoContext):
+
+            def topic(self):
+                from django import conf
+                return conf.settings
+
+            def should_be_the_vows_settings(self, topic):
+                expect(topic).to_be_instance_of(VowsSettings)
+
+        class WhenIImportTheCompletePathAndThenUseSettings(DjangoContext):
+
+            def topic(self):
+                import django.conf
+                return django.conf.settings
+
+            def should_be_the_vows_settings(self, topic):
+                expect(topic).to_be_instance_of(VowsSettings)
 
     class CannotSayHelloWithoutName(DjangoHTTPContext):
 
