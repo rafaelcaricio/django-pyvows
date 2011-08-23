@@ -1,5 +1,5 @@
-Django pyvows
-===============
+Django-Pyvows
+=============
 
 
 Pyvows
@@ -11,9 +11,13 @@ More documentation about pyvows can be found at the project homepage
 
 http://pyvows.org
 
-Django-pyvows
+Django-Pyvows
 --------------
 
+This project contains extensions to test Django projects under pyVows.
+
+Using Django-Pyvows
+-------------------
 
 There is no need to modify your project to use Django-PyVows. You only have to create the vows
 as you usually would, start the server and call your project urls:
@@ -39,3 +43,5 @@ as you usually would, start the server and call your project urls:
 
 To work you only need to override the `get_settings` method from DjangoHTTPContext to 
 return the path of your settings module. The default `get_settings` returns `"settings"`.
+
+More info: https://github.com/rafaelcaricio/django-pyvows/wiki
