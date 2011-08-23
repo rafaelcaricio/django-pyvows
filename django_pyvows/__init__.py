@@ -9,3 +9,5 @@
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
 __version__ = (0, 0, 1)
+
+from context import DjangoContext, DjangoHTTPContext
