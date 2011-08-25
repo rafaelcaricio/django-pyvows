@@ -43,4 +43,13 @@ class ModelVows(DjangoContext):
             def should_be_an_instance_of_django_model_class(self, topic):
                 expect(isinstance(topic, models.Model)).to_be_true()
 
+            def should_have_a_name_field(self, topic):
+                expect(topic).to_have_field('name')
+
+            def should_have_a_name_field_as_charfield(self, topic):
+                expect(topic).to_have_field('name', models.CharField)
+
+            def should_have_a_name_field_as_charfield_and_max_length_100(self, topic):
+                expect(topic).to_have_field('name', models.CharField, max_length=100)
+
 

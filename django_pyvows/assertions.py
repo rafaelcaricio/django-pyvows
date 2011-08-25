@@ -107,6 +107,23 @@ def not_to_contain(topic, selector):
             (unicode(topic), selector)
 
 @Vows.assertion
+def to_have_field(topic, field_name, field_class=None, **kwargs):
+    from django.db import models
+
+    if isinstance(topic, models.Model):
+        topic = topic.__class__
+
+    if not field_class:
+        field_class = models.Field
+
+    field = topic._meta.get_field(field_name)
+    assert isinstance(field, field_class), "The '%s.%s' is not an instance of '%s'" % (topic.__name__, field_name, field_class.__name__)
+    if kwargs:
+        for attr, value in kwargs.items():
+            field_value = getattr(field, attr)
+            assert field_value == value, "The field option '%s' should be equal to '%s', but it's equal to '%s'" % (attr, value, field_value)
+
+@Vows.assertion
 def to_be_cruddable(topic, defaults={}):
     import django.db.models.fields as fields
     instance = __create_or_update_instance(topic, None, defaults)
