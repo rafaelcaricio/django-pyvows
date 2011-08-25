@@ -94,14 +94,6 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
             self.wfile.flush()
 
         def start_response(status, response_headers, exc_info=None):
-            if exc_info:
-                try:
-                    if headers_sent:
-                        raise exc_info[0], exc_info[1], exc_info[2]
-                finally:
-                    exc_info = None
-            elif headers_set:
-                raise AssertionError('Headers already set')
             headers_set[:] = [status, response_headers]
             return write
 
@@ -109,9 +101,7 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
         try:
             for data in application_iter:
                 write(data)
-            # make sure the headers are sent
-            if not headers_sent:
-                write('')
+            write('')
         finally:
             if hasattr(application_iter, 'close'):
                 application_iter.close()
@@ -125,11 +115,6 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
     def log_request(self, *args, **kwargs):
         pass
 
-    def log_error(self, *args):
-        pass
-
-    def log_message(self, *args):
-        pass
 
 class DjangoServer(HTTPServer, object):
 

@@ -27,6 +27,9 @@ class Model(object):
         self.context = context
         self.model = model
 
+    def __call__(self, *args, **kwargs):
+        return self.model(*args, **kwargs)
+
 class Template(object):
     def __init__(self, template_name, context):
         self.template_name = template_name

@@ -34,7 +34,7 @@ class DjangoContext(Vows.Context):
     def __init__(self, parent):
         super(DjangoContext, self).__init__(parent)
         self.settings = {}
-        self.ignore('get_settings', 'template', 'request', 'model', 'url',
+        self.ignore('get_settings', 'template', 'request', 'model', 'url', 'find_in_parent',
                 'start_environment', 'port', 'host', 'get_url', 'get', 'post')
 
     def setup(self):
@@ -64,13 +64,19 @@ class DjangoContext(Vows.Context):
     def post(self, path, params):
         return http_helpers.post(self.get_url(path), params)
 
-    def get_url(self, path):
+    def find_in_parent(self, attr_name):
         ctx = self.parent
         while ctx:
-            if hasattr(ctx, 'get_url'):
-                return ctx.get_url(path)
+            if hasattr(ctx, attr_name):
+                return getattr(ctx, attr_name)
             ctx = ctx.parent
-        return ""
+        raise ValueError('Host could not be found in the context or any of its parents')
+
+    def get_url(self, path):
+        try:
+            return self.find_in_parent('get_url')(path)
+        except ValueError:
+            return path
 
 class DjangoHTTPContext(DjangoContext):
 
@@ -90,21 +96,13 @@ class DjangoHTTPContext(DjangoContext):
     def host(self):
         if hasattr(self, 'address'):
             return self.address[0]
-
-        if self.parent and hasattr(self.parent, 'host'):
-            return self.parent.host
-
-        raise RuntimeError('Host could not be found in the context or any of its parents')
+        return self.find_in_parent('host')
 
     @property
     def port(self):
         if hasattr(self, 'address'):
             return self.address[1]
-
-        if self.parent and hasattr(self.parent, 'port'):
-            return self.parent.port
-
-        raise RuntimeError('Port could not be found in the context or any of its parents')
+        return self.find_in_parent('port')
 
     def get_url(self, path):
         if re.match('^https?:\/\/', path):

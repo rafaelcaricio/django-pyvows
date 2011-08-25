@@ -8,8 +8,13 @@
 # http://www.opensource.org/licenses/mit-license
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
+import urllib2
+from os.path import abspath, join, dirname
+
 from django_pyvows.context import DjangoContext, DjangoHTTPContext
 from django_pyvows.assertions import *
+
+TEST_FILE_PATH = abspath(join(dirname(__file__), 'fixtures/the_file.txt'))
 
 @Vows.batch
 class HttpContextVows(DjangoHTTPContext):
@@ -55,4 +60,20 @@ class HttpContextVows(DjangoHTTPContext):
 
         def should_be_posted(self, topic):
             expect(topic.read()).to_equal('posted!')
+
+        class PostFile(DjangoContext):
+
+            def topic(self):
+                return self.post('/post_file/', {'the_file': open(TEST_FILE_PATH) })
+
+            def should_be_posted_to_the_server(self, topic):
+                expect(topic.read()).to_equal("the contents")
+
+        class PostToNotFound(DjangoContext):
+
+            def topic(self):
+                return self.post('/post_/', {'the_file': open(TEST_FILE_PATH) })
+
+            def should_be_thrown_an_error(self, topic):
+                expect(topic).to_be_an_error_like(urllib2.HTTPError)
 

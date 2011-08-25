@@ -13,6 +13,7 @@ from django_pyvows.context import DjangoContext
 
 DjangoContext.start_environment("sandbox.settings")
 
+from django.db import models
 from sandbox.main.models import StringModel
 
 @Vows.batch
@@ -30,5 +31,16 @@ class ModelVows(DjangoContext):
             expect(topic).to_be_cruddable({
                 'name': 'something'
             })
+
+        def should_have_a_method_to_call(self, topic):
+            expect(hasattr(topic, '__call__')).to_be_true()
+
+        class WhenICreateANewInstance(DjangoContext):
+
+            def topic(self, model):
+                return model()
+
+            def should_be_an_instance_of_django_model_class(self, topic):
+                expect(isinstance(topic, models.Model)).to_be_true()
 
 

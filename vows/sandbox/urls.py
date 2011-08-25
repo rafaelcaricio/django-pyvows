@@ -18,7 +18,7 @@ urlpatterns = patterns('',
     url(r'^$', 'sandbox.main.views.home', name='home'),
     url(r'^say/$', 'sandbox.main.views.say_hello', name='say_hello'),
     url(r'^post_it/$', 'sandbox.main.views.post_it', name='post_it'),
-    url(r'^settings/(?P<attr>[\w_]+)/?$', 'sandbox.main.views.get_setting', name='get_setting'),
+    url(r'^post_file/$', 'sandbox.main.views.post_file', name='post_file'),
 
     # url(r'^sandbox/', include('sandbox.foo.urls')),
 

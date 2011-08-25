@@ -28,6 +28,5 @@ def say_hello(request):
 def post_it(request):
     return HttpResponse(request.POST['value'])
 
-def get_setting(request, attr):
-    return HttpResponse(str(getattr(settings, attr)))
-
+def post_file(request):
+    return HttpResponse(request.FILES['the_file'].read().strip())
