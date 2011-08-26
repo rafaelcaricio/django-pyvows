@@ -23,6 +23,9 @@ class Model(object):
 def to_have_field(topic, field_name, field_class=None, **kwargs):
     from django.db import models
 
+    if isinstance(topic, Model):
+        topic = topic.model
+
     if isinstance(topic, models.Model):
         topic = topic.__class__
 

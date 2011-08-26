@@ -32,6 +32,9 @@ class ModelVows(DjangoContext):
                 'name': 'something'
             })
 
+        def should_be_possible_to_use_the_assertion_in_model_instance(self, topic):
+            expect(topic).to_have_field('name')
+
         def should_have_a_method_to_call(self, topic):
             expect(hasattr(topic, '__call__')).to_be_true()
 
