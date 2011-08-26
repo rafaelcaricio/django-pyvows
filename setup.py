@@ -38,7 +38,7 @@ django-pyvows are pyvows extensions to django web framework.
                    'Programming Language :: Python :: 2.6',
                    'Topic :: Software Development :: Testing'
     ],
-    packages = ['django_pyvows'],
+    packages = ['django_pyvows', 'django_pyvows.assertions'],
     package_dir = {"django_pyvows": "django_pyvows"},
 
     install_requires=[
