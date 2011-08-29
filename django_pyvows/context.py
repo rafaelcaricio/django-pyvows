@@ -29,6 +29,12 @@ class DjangoContext(Vows.Context):
         if not settings_path:
             raise RuntimeError('The settings_path argument is required.')
         os.environ['DJANGO_SETTINGS_MODULE'] = settings_path
+        try:
+            from django.conf import settings
+            # to register all models in admin
+            __import__(settings.ROOT_URLCONF)
+        except ImportError:
+            pass
         settings_tracker.install()
 
     def __init__(self, parent):
@@ -44,7 +50,7 @@ class DjangoContext(Vows.Context):
         if 'DJANGO_SETTINGS_MODULE' in os.environ:
             return os.environ['DJANGO_SETTINGS_MODULE']
         else:
-            return 'settings'
+            raise NotImplementedError('Should be implemented the "get_settings" method.')
 
     def url(self, path):
         return Url(self, path)

@@ -16,6 +16,8 @@ from django_pyvows.assertions import *
 
 TEST_FILE_PATH = abspath(join(dirname(__file__), 'fixtures/the_file.txt'))
 
+DjangoContext.start_environment("sandbox.settings")
+
 @Vows.batch
 class HttpContextVows(DjangoHTTPContext):
 

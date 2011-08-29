@@ -55,4 +55,16 @@ class ModelVows(DjangoContext):
             def should_have_a_name_field_as_charfield_and_max_length_100(self, topic):
                 expect(topic).to_have_field('name', models.CharField, max_length=100)
 
+        class AdminModel(DjangoContext):
+
+            def should_be_registred_in_admin(self, topic):
+                expect(topic).to_be_in_admin()
+
+            class StringModelInAdminOptions(DjangoContext):
+
+                def topic(self, model):
+                    return model.admin
+
+                def should_be_listed_by_name(self, topic):
+                    expect('name' in topic.list_display).to_be_true()
 

@@ -16,7 +16,7 @@ from django_pyvows.assertions import *
 @Vows.batch
 class TemplateVows(DjangoContext):
 
-    def _get_settings(self):
+    def get_settings(self):
         return 'sandbox.settings'
 
     class IndexTemplate(DjangoContext):

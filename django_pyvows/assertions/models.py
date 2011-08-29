@@ -13,11 +13,30 @@ from pyvows import Vows, expect
 
 class Model(object):
     def __init__(self, context, model):
+        from django.db import models
+
         self.context = context
+        if isinstance(model, models.Model):
+            model = model.__class__
         self.model = model
 
     def __call__(self, *args, **kwargs):
         return self.model(*args, **kwargs)
+
+    @property
+    def admin(self):
+        from django.contrib import admin
+        if self.model not in admin.site._registry:
+            raise admin.sites.NotRegistered('The model %s is not registered' % self.model.__name__)
+        return admin.site._registry[self.model]
+
+@Vows.assertion
+def to_be_in_admin(topic):
+    from django.contrib import admin
+    try:
+        assert topic.admin
+    except admin.sites.NotRegistered:
+        assert False, "The model %s isn't registered in admin." % topic.model.__name__
 
 @Vows.assertion
 def to_have_field(topic, field_name, field_class=None, **kwargs):
