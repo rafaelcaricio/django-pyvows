@@ -12,8 +12,6 @@ from pyvows import Vows, expect
 
 from django_pyvows.context import DjangoContext, DjangoHTTPContext
 
-DjangoContext.start_environment("sandbox.settings")
-
 @Vows.batch
 class ContextTest(Vows.Context):
 
