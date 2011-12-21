@@ -8,6 +8,6 @@
 # http://www.opensource.org/licenses/mit-license
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
-__version__ = (0, 0, 1)
+__version__ = (0, 1, 0)
 
 from context import DjangoContext, DjangoHTTPContext
