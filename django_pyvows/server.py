@@ -125,7 +125,7 @@ class DjangoServer(HTTPServer, object):
             thread = current_thread()
             if not hasattr(thread, "settings"):
                 thread.settings = local()
-                for key, value in settings.items():
+                for key, value in getattr(settings, '__dict__', settings).items():
                     setattr(thread.settings, key, value)
             while True:
                 self.handle_request()
