@@ -32,23 +32,20 @@ class DjangoContext(Vows.Context):
         os.environ['DJANGO_SETTINGS_MODULE'] = settings_path
         settings_tracker.install()
 
-
     def __init__(self, parent):
         super(DjangoContext, self).__init__(parent)
         self.ignore('get_settings', 'template', 'request', 'model', 'url', 'find_in_parent',
                 'start_environment', 'port', 'host', 'get_url', 'get', 'post')
 
-
     @property
     def settings(self):
         thread = current_thread()
-        if not hasattr(thread, "settings"):
+        if not hasattr(thread, 'settings'):
             thread.settings = local()
         return thread.settings
 
     def setup(self):
         DjangoContext.start_environment(self.get_settings())
-
 
     def get_settings(self):
         if 'DJANGO_SETTINGS_MODULE' in os.environ:
@@ -87,6 +84,7 @@ class DjangoContext(Vows.Context):
             return self.find_in_parent('get_url')(path)
         except ValueError:
             return path
+
 
 class DjangoHTTPContext(DjangoContext):
 
