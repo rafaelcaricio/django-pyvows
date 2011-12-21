@@ -8,7 +8,6 @@
 # http://www.opensource.org/licenses/mit-license
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
-import sys
 from threading import current_thread
 
 class SettingsTracker(object):
@@ -24,7 +23,7 @@ class SettingsTracker(object):
         fromlist = (fromlist or [])
         if name == 'django.conf' and 'settings' in fromlist:
             result.settings = VowsSettings(result.settings)
-        elif name == "django" and 'conf' in fromlist:
+        elif name == 'django' and 'conf' in fromlist:
             result.conf.settings = VowsSettings(result.conf.settings)
         return result
 
@@ -35,7 +34,7 @@ class VowsSettings(object):
 
     def __getattr__(self, attr_name):
         thread = current_thread()
-        if hasattr(thread, "settings"):
+        if hasattr(thread, 'settings'):
             if hasattr(thread.settings, attr_name):
                 return getattr(thread.settings, attr_name)
         return getattr(self.original_settings, attr_name)

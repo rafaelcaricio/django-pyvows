@@ -14,11 +14,8 @@ import urllib2
 from threading import Thread, local, current_thread
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
-from pyvows import Vows
-from django.http import HttpRequest
 from django.core.handlers.wsgi import WSGIHandler
 
-from django_pyvows.assertions import Url, Model, Template
 
 class WSGIRequestHandler(BaseHTTPRequestHandler):
     """A request handler that implements WSGI dispatching."""
@@ -132,6 +129,7 @@ class DjangoServer(HTTPServer, object):
                     setattr(thread.settings, key, value)
             while True:
                 self.handle_request()
+
         self.thr = Thread(target=make_response)
         self.thr.daemon = True
         self.thr.start()
