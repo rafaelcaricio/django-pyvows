@@ -48,10 +48,7 @@ class DjangoContext(Vows.Context):
         DjangoContext.start_environment(self.get_settings())
 
     def get_settings(self):
-        if 'DJANGO_SETTINGS_MODULE' in os.environ:
-            return os.environ['DJANGO_SETTINGS_MODULE']
-        else:
-            return 'settings'
+        return os.environ.get('DJANGO_SETTINGS_MODULE', 'settings')
 
     def url(self, path):
         return Url(self, path)

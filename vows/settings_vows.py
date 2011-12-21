@@ -53,7 +53,7 @@ class SettingsVows(DjangoContext):
     class CannotSayHelloWithoutName(DjangoHTTPContext):
 
         def topic(self):
-            self.settings['SAY_HELLO_WITHOUT_NAME'] = False
+            self.settings.SAY_HELLO_WITHOUT_NAME = False
             self.start_server(port=8002)
             return self.get('/say/')
 
@@ -66,7 +66,7 @@ class SettingsVows(DjangoContext):
     class SayHelloWithoutName(DjangoHTTPContext):
 
         def topic(self):
-            self.settings['SAY_HELLO_WITHOUT_NAME'] = True
+            self.settings.SAY_HELLO_WITHOUT_NAME = True
             self.start_server(port=8003)
             return self.get('/say/')
 

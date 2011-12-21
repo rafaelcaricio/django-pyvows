@@ -121,16 +121,17 @@ class DjangoServer(HTTPServer, object):
 
     def start(self, settings):
         self.server_activate()
-        def make_response():
-            thread = current_thread()
-            if not hasattr(thread, "settings"):
-                thread.settings = local()
-                for key, value in getattr(settings, '__dict__', settings).items():
-                    setattr(thread.settings, key, value)
-            while True:
-                self.handle_request()
-
-        self.thr = Thread(target=make_response)
+        self.thr = Thread(target=self.make_response_thread, args=(getattr(settings, '__dict__', settings),))
         self.thr.daemon = True
         self.thr.start()
+
+    def make_response_thread(self, settings):
+        thread = current_thread()
+        if not hasattr(thread, 'settings'):
+            thread.settings = local()
+            for key, value in settings.items():
+                setattr(thread.settings, key, value)
+        while True:
+            self.handle_request()
+
 
