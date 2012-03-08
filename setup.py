@@ -43,7 +43,8 @@ django-pyvows are pyvows extensions to django web framework.
 
     install_requires=[
         "pyvows",
-        "django"
+        "django",
+        "httplib2"
     ],
 
 )
