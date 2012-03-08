@@ -54,25 +54,25 @@ class SettingsVows(DjangoContext):
 
         def topic(self):
             self.settings.SAY_HELLO_WITHOUT_NAME = False
-            self.start_server(port=8002)
+            self.start_server(port=9000)
             return self.get('/say/')
 
-        def should_be_ok(self, topic):
-            expect(topic.code).to_equal(200)
+        def should_be_ok(self, (topic, content)):
+            expect(topic.status).to_equal(200)
 
-        def should_ask_for_my_name(self, topic):
-            expect(topic.read()).to_equal("What's your name?")
+        def should_ask_for_my_name(self, (topic, content)):
+            expect(content).to_equal("What's your name?")
 
     class SayHelloWithoutName(DjangoHTTPContext):
 
         def topic(self):
             self.settings.SAY_HELLO_WITHOUT_NAME = True
-            self.start_server(port=8003)
+            self.start_server(port=9001)
             return self.get('/say/')
 
-        def should_be_ok(self, topic):
-            expect(topic.code).to_equal(200)
+        def should_be_ok(self, (topic, content)):
+            expect(topic.status).to_equal(200)
 
-        def should_(self, topic):
-            expect(topic.read()).to_equal("Hello, guess!")
+        def should_(self, (topic, content)):
+            expect(content).to_equal("Hello, guess!")
 

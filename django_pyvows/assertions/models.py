@@ -8,8 +8,7 @@
 # http://www.opensource.org/licenses/mit-license
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
-from pyvows import Vows, expect
-
+from pyvows import Vows
 
 class Model(object):
     def __init__(self, context, model):

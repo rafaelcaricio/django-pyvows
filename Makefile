@@ -1,4 +1,4 @@
-pyvows:
+pyvows: db
 	@env PYTHONPATH=$$PYTHONPATH:vows/sandbox/:. pyvows --cover --cover_package=django_pyvows --cover_threshold=95 vows/
 
 ci_test:
