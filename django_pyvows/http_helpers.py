@@ -1,7 +1,5 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
-import httplib2
+import urllib2
+from urllib import urlencode
 
 import mimetypes
 import mimetools
@@ -72,12 +70,10 @@ class MultiPartForm(object):
 
 
 def get(url):
-    h = httplib2.Http()
-    resp, content = h.request(url)
-    return resp, content
+    response = urllib2.urlopen(url)
+    return response
 
 def post(url, data):
-    h = httplib2.Http()
     form = MultiPartForm()
 
     for field, value in data.iteritems():
@@ -86,15 +82,15 @@ def post(url, data):
         else:
             form.add_field(field, str(value))
 
+    request = urllib2.Request(url)
     body = str(form)
-    headers = {
-        'Content-type': form.get_content_type(),
-        'Content-length': str(len(body))
-    }
+    request.add_header('Content-type', form.get_content_type())
+    request.add_header('Content-length', len(body))
+    request.add_data(body)
 
     try:
-        response = h.request(url, 'POST', headers=headers, body=body)
-    except httplib2.HttpLib2Error, err:
+        response = urllib2.urlopen(request)
+    except urllib2.HTTPError, err:
         response = err
 
     return response
