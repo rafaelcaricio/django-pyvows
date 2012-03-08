@@ -112,5 +112,5 @@ class DjangoHTTPContext(DjangoContext):
     def get_url(self, path):
         if re.match('^https?:\/\/', path):
             return path
-        return 'http://%s:%d%s' % (self.host, self.port, path)
+        return 'http://%s:%d/%s' % (self.host, self.port, path.lstrip('/'))
 
