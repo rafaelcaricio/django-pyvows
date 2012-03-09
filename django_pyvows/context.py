@@ -10,7 +10,6 @@
 
 import os
 import re
-from threading import local, current_thread
 
 from pyvows import Vows
 from django.http import HttpRequest
@@ -36,13 +35,6 @@ class DjangoContext(Vows.Context):
         super(DjangoContext, self).__init__(parent)
         self.ignore('get_settings', 'template', 'request', 'model', 'url', 'find_in_parent',
                 'start_environment', 'port', 'host', 'get_url', 'get', 'post')
-
-    @property
-    def settings(self):
-        thread = current_thread()
-        if not hasattr(thread, 'settings'):
-            thread.settings = local()
-        return thread.settings
 
     def setup(self):
         DjangoContext.start_environment(self.get_settings())
@@ -83,15 +75,16 @@ class DjangoContext(Vows.Context):
             return path
 
 
+
 class DjangoHTTPContext(DjangoContext):
 
-    def start_server(self, host=None, port=None):
+    def start_server(self, host=None, port=None, settings={}):
         if not port: port = DEFAULT_PORT
         if not host: host = DEFAULT_HOST
 
         self.address = (host, port)
         self.server = DjangoServer(host, port)
-        self.server.start(self.settings)
+        self.server.start(settings)
 
     def __init__(self, parent):
         super(DjangoHTTPContext, self).__init__(parent)
