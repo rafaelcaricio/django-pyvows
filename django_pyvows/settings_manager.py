@@ -35,8 +35,8 @@ class VowsSettings(object):
     def __getattr__(self, attr_name):
         thread = current_thread()
         if hasattr(thread, 'settings'):
-            if hasattr(thread.settings, attr_name):
-                return getattr(thread.settings, attr_name)
+            if attr_name in thread.settings:
+                return thread.settings[attr_name]
         return getattr(self.original_settings, attr_name)
 
 settings_tracker = SettingsTracker()

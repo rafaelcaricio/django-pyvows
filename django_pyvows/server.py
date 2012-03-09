@@ -16,10 +16,6 @@ from cherrypy import wsgiserver
 from django.core.handlers.wsgi import WSGIHandler
 
 
-def make_response_thread(thread, settings):
-    if not hasattr(thread, 'settings'):
-        thread.settings = settings
-
 def run_app(host, port):
     server = wsgiserver.CherryPyWSGIServer(
         (host, port),
@@ -51,9 +47,10 @@ class DjangoServer(object):
             sleep(0.1)
 
         for _thread in self.thr.server.requests._threads:
-            _thread.settings = hasattr(_thread, 'settings') and _thread.settings or local()
+            _thread.settings = hasattr(_thread, 'settings') and _thread.settings or {}
             for k, v in settings.iteritems():
-                setattr(_thread.settings, k, v)
+                _thread.settings[k] = v
+                #setattr(_thread.settings, k, v)
 
 
 

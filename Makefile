@@ -1,5 +1,5 @@
 pyvows: db
-	@env PYTHONPATH=$$PYTHONPATH:vows/sandbox/:. pyvows --cover --cover_package=django_pyvows --cover_threshold=95 vows/settings_vows.py
+	@env PYTHONPATH=$$PYTHONPATH:vows/sandbox/:. pyvows --cover --cover_package=django_pyvows --cover_threshold=95 vows/
 
 ci_test:
 	@env PYTHONPATH=$$PYTHONPATH:vows/sandbox/:. python vows/sandbox/manage.py syncdb && pyvows --no_color --cover --cover_package=django_pyvows --cover_threshold=100 -r django_pyvows.coverage.xml -x vows/
