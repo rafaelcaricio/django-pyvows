@@ -41,16 +41,19 @@ class DjangoServer(object):
     def start(self, settings):
         self.thr = Thread(target=run_app, args=(self.host, self.port))
         self.thr.daemon = True
+        self.thr.settings = {}
+        for k, v in settings.iteritems():
+            self.thr.settings[k] = v
+
         self.thr.start()
 
         while not len(self.thr.server.requests._threads):
             sleep(0.1)
 
         for _thread in self.thr.server.requests._threads:
-            _thread.settings = hasattr(_thread, 'settings') and _thread.settings or {}
+            _thread.settings = {}
             for k, v in settings.iteritems():
                 _thread.settings[k] = v
-                #setattr(_thread.settings, k, v)
 
 
 
