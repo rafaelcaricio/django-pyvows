@@ -22,9 +22,11 @@ class SettingsTracker(object):
         result = apply(self.real_import, (name, globals, locals, fromlist, level))
         fromlist = (fromlist or [])
         if name == 'django.conf' and 'settings' in fromlist:
-            result.settings = VowsSettings(result.settings)
+            if type(result.settings) != VowsSettings:
+                result.settings = VowsSettings(result.settings)
         elif name == 'django' and 'conf' in fromlist:
-            result.conf.settings = VowsSettings(result.conf.settings)
+            if type(result.conf.settings) != VowsSettings:
+                result.conf.settings = VowsSettings(result.conf.settings)
         return result
 
 class VowsSettings(object):
