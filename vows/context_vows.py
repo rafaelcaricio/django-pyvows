@@ -111,7 +111,7 @@ class ContextTest(Vows.Context):
         def topic(self):
             return self.server
         
-        def should_default_to_one_thread(self,topic):
+        def should_allow_user_to_specify_number_of_threads(self,topic):
             expect(topic.thr.server._get_numthreads()).to_equal(5)
 
 
