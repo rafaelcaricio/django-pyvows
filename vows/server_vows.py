@@ -80,3 +80,4 @@ class HttpContextVows(DjangoHTTPContext):
             def should_be_404(self, (topic, content)):
                 expect(topic.status).to_equal(404)
 
+

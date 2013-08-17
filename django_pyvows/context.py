@@ -78,13 +78,13 @@ class DjangoContext(Vows.Context):
 
 class DjangoHTTPContext(DjangoContext):
 
-    def start_server(self, host=None, port=None, settings={}):
+    def start_server(self, host=None, port=None, settings={}, threads=1):
         if not port: port = DEFAULT_PORT
         if not host: host = DEFAULT_HOST
 
         self.address = (host, port)
         self.server = DjangoServer(host, port)
-        self.server.start(settings)
+        self.server.start(settings,threads)
 
     def __init__(self, parent):
         super(DjangoHTTPContext, self).__init__(parent)
