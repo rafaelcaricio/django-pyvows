@@ -57,6 +57,9 @@ class ContextTest(Vows.Context):
 
         def setup(self):
             self.start_server(port=8085)
+        
+        def should_default_to_one_thread(self,topic):
+            expect(self.server.thr.server._get_numthreads()).to_equal(1)
 
         class WithinDjangoHTTPContextTheGetUrlMethod(DjangoHTTPContext):
 
@@ -99,4 +102,16 @@ class ContextTest(Vows.Context):
 
                 def the_get_url_method_should_return_a_well_formed_url(self, topic):
                     expect(topic).to_equal('http://127.0.0.1:8085/')
+
+    class WithinAMultiThreadedServer(DjangoHTTPContext):
+
+        def setup(self):
+            self.start_server(threads=5)
+
+        def topic(self):
+            return self.server
+        
+        def should_allow_user_to_specify_number_of_threads(self,topic):
+            expect(topic.thr.server._get_numthreads()).to_equal(5)
+
 

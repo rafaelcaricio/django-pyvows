@@ -16,12 +16,12 @@ from cherrypy import wsgiserver
 from django.core.handlers.wsgi import WSGIHandler
 
 
-def run_app(host, port):
+def run_app(host, port, thread_count):
     server = wsgiserver.CherryPyWSGIServer(
-        (host, port),
+        (host, port), 
         WSGIHandler(),
         server_name='tornado-pyvows',
-        numthreads = 1
+        numthreads = thread_count
     )
 
     my_thread = current_thread()
@@ -35,11 +35,11 @@ def run_app(host, port):
 class DjangoServer(object):
 
     def __init__(self, host, port):
-        self.host = host
+        self.host = host 
         self.port = port
 
-    def start(self, settings):
-        self.thr = Thread(target=run_app, args=(self.host, self.port))
+    def start(self, settings, thread_count=1):
+        self.thr = Thread(target= run_app, args=(self.host, self.port, thread_count))
         self.thr.daemon = True
         self.thr.settings = {}
         for k, v in settings.iteritems():
