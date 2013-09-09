@@ -47,3 +47,10 @@ To work you only need to override the `get_settings` method from DjangoHTTPConte
 return the path of your settings module. The default `get_settings` returns `"settings"`.
 
 More info: https://github.com/rafaelcaricio/django-pyvows/wiki
+
+External links
+--------------
+- Asynchronous Testing with Django and PyVows
+  - http://www.realpython.com/blog/python/asynchronous-testing-with-django-and-pyvows/
+- Unit Testing with pyVows and Django
+  - http://www.realpython.com/blog/python/unit-testing-with-pyvows-and-django/
