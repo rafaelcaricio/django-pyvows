@@ -54,3 +54,5 @@ External links
   - http://www.realpython.com/blog/python/asynchronous-testing-with-django-and-pyvows/
 - Unit Testing with pyVows and Django
   - http://www.realpython.com/blog/python/unit-testing-with-pyvows-and-django/
+- Integration testing with pyVows and Django
+  - http://www.realpython.com/blog/python/integration-testing-with-pyvows-and-django/
