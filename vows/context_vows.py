@@ -9,12 +9,15 @@
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
 from pyvows import Vows, expect
+from pyvows.decorators import capture_error
 
-from django_pyvows.context import DjangoContext, DjangoHTTPContext
+from django_pyvows.context import DjangoContext
+
 
 @Vows.batch
 class ContextTest(Vows.Context):
 
+    @capture_error
     def topic(self):
         return DjangoContext.start_environment(None)
 
@@ -22,7 +25,7 @@ class ContextTest(Vows.Context):
         expect(topic).to_be_an_error()
 
     def should_be_runtime_error(self, topic):
-        expect(topic).to_be_an_error_like(RuntimeError)
+        expect(topic).to_be_an_error_like(ValueError)
 
     def should_have_nice_error_message(self, topic):
         expect(topic).to_have_an_error_message_of('The settings_path argument is required.')
@@ -36,82 +39,3 @@ class ContextTest(Vows.Context):
 
             def should_return_the_same_path(self, topic):
                 expect(topic).to_equal('/')
-
-        class TheHost(DjangoHTTPContext):
-
-            def topic(self):
-                return self.host
-
-            def should_return_an_error(self, topic):
-                expect(topic).to_be_an_error_like(ValueError)
-
-        class ThePort(DjangoHTTPContext):
-
-            def topic(self):
-                return self.port
-
-            def should_return_an_error(self, topic):
-                expect(topic).to_be_an_error_like(ValueError)
-
-    class WithinAServer(DjangoHTTPContext):
-
-        def setup(self):
-            self.start_server(port=8085)
-        
-        def should_default_to_one_thread(self,topic):
-            expect(self.server.thr.server._get_numthreads()).to_equal(1)
-
-        class WithinDjangoHTTPContextTheGetUrlMethod(DjangoHTTPContext):
-
-            def topic(self):
-                return self.get_url('http://127.0.0.1:8085/complete_url/')
-
-            def when_passed_a_complete_url_should_return_the_url_without_modification(self, topic):
-                expect(topic).to_equal('http://127.0.0.1:8085/complete_url/')
-
-            class InADjangoHTTPContext(DjangoHTTPContext):
-
-                def topic(self):
-                    return self.get_url('/')
-
-                def the_get_url_should_return_a_well_formed_url(self, topic):
-                    expect(topic).to_equal('http://127.0.0.1:8085/')
-
-        class ANoDjangoContext(Vows.Context):
-
-            class TheHost(DjangoHTTPContext):
-
-                def topic(self):
-                    return self.host
-
-                def should_be_equal_to_the_host_in_out_context(self, topic):
-                    expect(topic).to_equal('127.0.0.1')
-
-            class ThePort(DjangoHTTPContext):
-
-                def topic(self):
-                    return self.port
-
-                def should_be_equal_to_the_port_in_out_context(self, topic):
-                    expect(topic).to_equal(8085)
-
-            class AnDjangoContext(DjangoContext):
-
-                def topic(self):
-                    return self.get_url('/')
-
-                def the_get_url_method_should_return_a_well_formed_url(self, topic):
-                    expect(topic).to_equal('http://127.0.0.1:8085/')
-
-    class WithinAMultiThreadedServer(DjangoHTTPContext):
-
-        def setup(self):
-            self.start_server(threads=5)
-
-        def topic(self):
-            return self.server
-        
-        def should_allow_user_to_specify_number_of_threads(self,topic):
-            expect(topic.thr.server._get_numthreads()).to_equal(5)
-
-

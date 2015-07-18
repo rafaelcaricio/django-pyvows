@@ -13,7 +13,8 @@ from django_pyvows.context import DjangoContext
 
 DjangoContext.start_environment("sandbox.settings")
 
-from sandbox.main.views import home
+from sandbox.main.views import home  # NOQA
+
 
 @Vows.batch
 class ViewVows(DjangoContext):

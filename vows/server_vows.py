@@ -10,14 +10,13 @@
 
 from os.path import abspath, join, dirname
 
-import httplib2
-
 from django_pyvows.context import DjangoContext, DjangoHTTPContext
-from django_pyvows.assertions import *
+from django_pyvows.assertions import *  # NOQA
 
 TEST_FILE_PATH = abspath(join(dirname(__file__), 'fixtures/the_file.txt'))
 
 DjangoContext.start_environment("sandbox.settings")
+
 
 @Vows.batch
 class HttpContextVows(DjangoHTTPContext):
@@ -67,7 +66,7 @@ class HttpContextVows(DjangoHTTPContext):
         class PostFile(DjangoContext):
 
             def topic(self):
-                return self.post('/post_file/', {'the_file': open(TEST_FILE_PATH) })
+                return self.post('/post_file/', {'the_file': open(TEST_FILE_PATH)})
 
             def should_be_posted_to_the_server(self, (topic, content)):
                 expect(content).to_equal("the contents")
@@ -75,9 +74,7 @@ class HttpContextVows(DjangoHTTPContext):
         class PostToNotFound(DjangoContext):
 
             def topic(self):
-                return self.post('/post_/', {'the_file': open(TEST_FILE_PATH) })
+                return self.post('/post_/', {'the_file': open(TEST_FILE_PATH)})
 
             def should_be_404(self, (topic, content)):
                 expect(topic.status).to_equal(404)
-
-

@@ -11,13 +11,11 @@
 from pyvows import Vows, expect
 
 from django_pyvows.context import DjangoContext
-from django_pyvows.assertions import *
+from django_pyvows.assertions import *  # NOQA
+
 
 @Vows.batch
 class TemplateVows(DjangoContext):
-
-    def get_settings(self):
-        return 'sandbox.settings'
 
     class IndexTemplate(DjangoContext):
 
@@ -42,5 +40,3 @@ class TemplateVows(DjangoContext):
 
             def should_have_paragraph_with_text(self, topic):
                 expect(topic).to_be_like('some text')
-
-

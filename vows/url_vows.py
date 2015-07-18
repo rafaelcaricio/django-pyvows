@@ -8,16 +8,16 @@
 # http://www.opensource.org/licenses/mit-license
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
-from pyvows import Vows, expect
+from pyvows import expect
 
 from django_pyvows.context import DjangoContext
-from django_pyvows.assertions import *
+from django_pyvows.assertions import *  # NOQA
 
 DjangoContext.start_environment("sandbox.settings")
 
-from sandbox.main.views import home
+from sandbox.main.views import home  # NOQA
 
-@Vows.batch
+
 class UrlVows(DjangoContext):
 
     class Home(DjangoContext):

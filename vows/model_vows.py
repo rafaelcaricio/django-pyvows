@@ -8,15 +8,15 @@
 # http://www.opensource.org/licenses/mit-license
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
-from pyvows import Vows, expect
+from pyvows import expect
 from django_pyvows.context import DjangoContext
 
-DjangoContext.start_environment("sandbox.settings")
+DjangoContext.start_environment("sandbox.sandbox.settings")
 
-from django.db import models
-from sandbox.main.models import StringModel
+from django.db import models  # NOQA
+from sandbox.main.models import StringModel  # NOQA
 
-@Vows.batch
+
 class ModelVows(DjangoContext):
 
     class MainModel(DjangoContext):
@@ -54,5 +54,3 @@ class ModelVows(DjangoContext):
 
             def should_have_a_name_field_as_charfield_and_max_length_100(self, topic):
                 expect(topic).to_have_field('name', models.CharField, max_length=100)
-
-
