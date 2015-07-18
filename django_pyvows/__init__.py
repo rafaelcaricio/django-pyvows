@@ -9,3 +9,4 @@
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
 from context import DjangoContext  # NOQA
+from assertions import *  # NOQA

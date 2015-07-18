@@ -3,8 +3,11 @@ setup: deps db
 deps:
 	@pip install -r requirements.txt
 
+sandbox_run:
+	@env PYTHONPATH=$$PYTHONPATH:vows:. python vows/sandbox/manage.py runserver
+
 sandbox_shell:
-	@env PYTHONPATH=$$PYTHONPATH:vows/sandbox/:. python vows/sandbox/manage.py shell
+	@env PYTHONPATH=$$PYTHONPATH:vows:. python vows/sandbox/manage.py shell
 
 pyvows:
 	@env PYTHONPATH=$$PYTHONPATH:vows/sandbox/:. pyvows -c -l django_pyvows --profile-threshold 95 vows/
