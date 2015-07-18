@@ -10,7 +10,8 @@
 
 from django.contrib import admin
 
-from sandbox.main.models import StringModel
+from models import StringModel
+
 
 class StringModelAdmin(admin.ModelAdmin):
     list_display = ('name', )

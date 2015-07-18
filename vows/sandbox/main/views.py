@@ -15,6 +15,7 @@ from django.http import HttpResponse
 def home(request):
     return HttpResponse('hello world')
 
+
 def say_hello(request):
     SAY_HELLO_WITHOUT_NAME = getattr(settings, "SAY_HELLO_WITHOUT_NAME", False)
     if 'name' in request.GET:
@@ -25,8 +26,10 @@ def say_hello(request):
         return HttpResponse("What's your name?")
     return HttpResponse("Hello, %s!" % name)
 
+
 def post_it(request):
     return HttpResponse(request.POST['value'])
+
 
 def post_file(request):
     return HttpResponse(request.FILES['the_file'].read().strip())
