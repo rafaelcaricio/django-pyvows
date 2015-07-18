@@ -31,15 +31,11 @@ class DjangoContext(Vows.Context):
 
     def __init__(self, parent):
         super(DjangoContext, self).__init__(parent)
-        self.ignore('start_environment', 'settings', 'modify_settings', 'get', 'post')
+        self.ignore('start_environment', 'settings', 'get', 'post')
 
     def settings(self, **kwargs):
         from django.test.utils import override_settings
         return override_settings(**kwargs)
-
-    def modify_settings(self, **kwargs):
-        from django.test.utils import modify_settings
-        return modify_settings(**kwargs)
 
     def get(self, *args, **kwargs):
         return http_helpers.get(*args, **kwargs)

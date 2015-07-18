@@ -21,7 +21,7 @@ def say_hello(request):
     if 'name' in request.GET:
         name = request.GET['name']
     elif SAY_HELLO_WITHOUT_NAME:
-        name = 'guess'
+        name = 'guest'
     else:
         return HttpResponse("What's your name?")
     return HttpResponse("Hello, %s!" % name)

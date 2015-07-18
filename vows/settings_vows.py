@@ -9,6 +9,7 @@
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
 from pyvows import Vows, expect
+from django.test.utils import override_settings
 
 from django_pyvows.context import DjangoContext
 
@@ -19,7 +20,6 @@ DjangoContext.start_environment("sandbox.sandbox.settings")
 class SettingsOverridingVows(DjangoContext):
 
     class CannotSayHelloWithoutName(DjangoContext):
-
         def topic(self):
             with self.settings(SAY_HELLO_WITHOUT_NAME=False):
                 return self.get('/say/')
@@ -31,7 +31,6 @@ class SettingsOverridingVows(DjangoContext):
             expect(topic.content).to_equal("What's your name?")
 
     class SayHelloWithoutName(DjangoContext):
-
         def topic(self):
             with self.settings(SAY_HELLO_WITHOUT_NAME=True):
                 return self.get('/say/')
@@ -40,4 +39,12 @@ class SettingsOverridingVows(DjangoContext):
             expect(topic.status_code).to_equal(200)
 
         def should_(self, topic):
-            expect(topic.content).to_equal("Hello, guess!")
+            expect(topic.content).to_equal("Hello, guest!")
+
+    class UseDecoratorToChangeSettings(DjangoContext):
+        @override_settings(SAY_HELLO_WITHOUT_NAME=True)
+        def topic(self):
+            return self.get('/say/')
+
+        def should_say_hello_to_guest(self, topic):
+            expect(topic.content).to_equal("Hello, guest!")
