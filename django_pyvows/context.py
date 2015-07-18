@@ -31,8 +31,7 @@ class DjangoContext(Vows.Context):
 
     def __init__(self, parent):
         super(DjangoContext, self).__init__(parent)
-        self.ignore('template', 'request', 'model', 'url', 'find_in_parent',
-                'start_environment', 'settings', 'modify_settings', 'get', 'post')
+        self.ignore('start_environment', 'settings', 'modify_settings', 'get', 'post')
 
     def settings(self, **kwargs):
         from django.test.utils import override_settings
@@ -42,8 +41,8 @@ class DjangoContext(Vows.Context):
         from django.test.utils import modify_settings
         return modify_settings(**kwargs)
 
-    def get(self, path):
-        return http_helpers.get(path)
+    def get(self, *args, **kwargs):
+        return http_helpers.get(*args, **kwargs)
 
-    def post(self, path, params):
-        return http_helpers.post(path, params)
+    def post(self, *args, **kwargs):
+        return http_helpers.post(*args, **kwargs)

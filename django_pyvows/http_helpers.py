@@ -2,27 +2,13 @@
 # -*- coding: utf-8 -*-
 
 
-class RetrocompatibleResponse(object):
-    def __init__(self, response):
-        self.response = response
-
-    @property
-    def status(self):
-        return self.response.status_code
-
-    def __iter__(self):
-        yield self
-        yield self.response.content
-
-
-def get(url):
+def get(*args, **kwargs):
     from django.test.client import Client
     client = Client()
-    resp = client.get(url)
-    return RetrocompatibleResponse(resp), resp.content
+    return client.get(*args, **kwargs)
 
 
-def post(url, data):
+def post(*args, **kwargs):
     from django.test.client import Client
     client = Client()
-    return RetrocompatibleResponse(client.post(url, data))
+    return client.post(*args, **kwargs)

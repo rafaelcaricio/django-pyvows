@@ -16,7 +16,7 @@ DjangoContext.start_environment("sandbox.sandbox.settings")
 
 
 @Vows.batch
-class SettingsVows(DjangoContext):
+class SettingsOverridingVows(DjangoContext):
 
     class CannotSayHelloWithoutName(DjangoContext):
 
@@ -24,11 +24,11 @@ class SettingsVows(DjangoContext):
             with self.settings(SAY_HELLO_WITHOUT_NAME=False):
                 return self.get('/say/')
 
-        def should_be_ok(self, (topic, content)):
-            expect(topic.status).to_equal(200)
+        def should_be_ok(self, topic):
+            expect(topic.status_code).to_equal(200)
 
-        def should_ask_for_my_name(self, (topic, content)):
-            expect(content).to_equal("What's your name?")
+        def should_ask_for_my_name(self, topic):
+            expect(topic.content).to_equal("What's your name?")
 
     class SayHelloWithoutName(DjangoContext):
 
@@ -36,8 +36,8 @@ class SettingsVows(DjangoContext):
             with self.settings(SAY_HELLO_WITHOUT_NAME=True):
                 return self.get('/say/')
 
-        def should_be_ok(self, (topic, content)):
-            expect(topic.status).to_equal(200)
+        def should_be_ok(self, topic):
+            expect(topic.status_code).to_equal(200)
 
-        def should_(self, (topic, content)):
-            expect(content).to_equal("Hello, guess!")
+        def should_(self, topic):
+            expect(topic.content).to_equal("Hello, guess!")
