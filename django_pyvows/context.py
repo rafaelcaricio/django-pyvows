@@ -12,10 +12,9 @@ import os
 
 import django
 from pyvows import Vows
-from django.http import HttpRequest
 
 from django_pyvows import http_helpers
-from django_pyvows.assertions import Url, Model, Template
+from django_pyvows.assertions import Model, Template
 
 
 class DjangoContext(Vows.Context):
@@ -44,14 +43,8 @@ class DjangoContext(Vows.Context):
         from django.test.utils import modify_settings
         return modify_settings(**kwargs)
 
-    def url(self, path):
-        return Url(self, path)
-
     def template(self, template_name, context):
         return Template(template_name, context)
-
-    def request(self, **kw):
-        return HttpRequest(**kw)
 
     def model(self, model_class):
         return Model(self, model_class)

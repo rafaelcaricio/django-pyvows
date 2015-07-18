@@ -8,6 +8,5 @@
 # http://www.opensource.org/licenses/mit-license
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
-from urls import *
-from models import *
-from templates import *
+from models import *  # NOQA
+from templates import *  # NOQA
