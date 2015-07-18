@@ -33,8 +33,8 @@ class DjangoContext(Vows.Context):
 
     def __init__(self, parent):
         super(DjangoContext, self).__init__(parent)
-        self.ignore('get_settings', 'template', 'request', 'model', 'url', 'find_in_parent',
-                'start_environment', 'settings', 'modify_settings', 'get_url', 'get', 'post')
+        self.ignore('template', 'request', 'model', 'url', 'find_in_parent',
+                'start_environment', 'settings', 'modify_settings', 'get', 'post')
 
     def settings(self, **kwargs):
         from django.test.utils import override_settings

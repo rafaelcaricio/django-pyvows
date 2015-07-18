@@ -29,13 +29,3 @@ class ContextTest(Vows.Context):
 
     def should_have_nice_error_message(self, topic):
         expect(topic).to_have_an_error_message_of('The settings_path argument is required.')
-
-    class WithinANoDjangoContext(Vows.Context):
-
-        class TheGetUrlMethod(DjangoContext):
-
-            def topic(self):
-                return self.get_url('/')
-
-            def should_return_the_same_path(self, topic):
-                expect(topic).to_equal('/')
