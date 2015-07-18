@@ -14,7 +14,6 @@ import django
 from pyvows import Vows
 
 from django_pyvows import http_helpers
-from django_pyvows.assertions import Model, Template
 
 
 class DjangoContext(Vows.Context):
@@ -43,18 +42,8 @@ class DjangoContext(Vows.Context):
         from django.test.utils import modify_settings
         return modify_settings(**kwargs)
 
-    def template(self, template_name, context):
-        return Template(template_name, context)
-
-    def model(self, model_class):
-        return Model(self, model_class)
-
     def get(self, path):
         return http_helpers.get(path)
 
     def post(self, path, params):
         return http_helpers.post(path, params)
-
-
-class DjangoHTTPContext(DjangoContext):
-    pass
