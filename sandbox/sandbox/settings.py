@@ -28,7 +28,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'sandbox.main',
+    'main',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -42,7 +42,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
 )
 
-ROOT_URLCONF = 'sandbox.sandbox.urls'
+ROOT_URLCONF = 'sandbox.urls'
 
 TEMPLATES = [
     {
