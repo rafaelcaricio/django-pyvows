@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 # django-pyvows extensions
@@ -20,15 +19,19 @@ from django_pyvows.settings_helpers import SettingsOverrideSupport
 class DjangoContext(Vows.Context, HttpClientSupport, SettingsOverrideSupport):
     def __init__(self, parent):
         super(DjangoContext, self).__init__(parent)
+
         HttpClientSupport.__init__(self)
         SettingsOverrideSupport.__init__(self)
-        self.ignore('start_environment', 'settings_module')
+
+        self.ignore('setup_environment', 'settings_module')
+
+        DjangoContext.setup_environment(self.settings_module())
 
     def settings_module(self):
         return 'settings'
 
     @classmethod
-    def start_environment(cls, settings_module):
+    def setup_environment(cls, settings_module):
         if not settings_module:
             raise ValueError('The settings_path argument is required.')
 

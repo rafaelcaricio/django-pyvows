@@ -7,16 +7,10 @@
 # Licensed under the MIT license:
 # http://www.opensource.org/licenses/mit-license
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
-from os.path import abspath, join, dirname
 
 from pyvows import Vows, expect
 
-from django_pyvows.context import DjangoContext
-
-
-TEST_FILE_PATH = abspath(join(dirname(__file__), 'fixtures/the_file.txt'))
-
-DjangoContext.start_environment("sandbox.sandbox.settings")
+from test_config import ConfiguredVowsContext as DjangoContext
 
 
 @Vows.batch
@@ -48,14 +42,14 @@ class DjangoHTTPTestClientCompatibilityVows(DjangoContext):
 
         class PostFile(DjangoContext):
             def topic(self):
-                return self.post('/post_file/', {'the_file': open(TEST_FILE_PATH)})
+                return self.post('/post_file/', {'the_file': open(self.TEST_FILE_PATH)})
 
             def should_be_posted_to_the_server(self, topic):
                 expect(topic.content).to_equal("the contents")
 
         class WhenNotFound(DjangoContext):
             def topic(self):
-                return self.post('/post_/', {'the_file': open(TEST_FILE_PATH)})
+                return self.post('/post_/', {'the_file': open(self.TEST_FILE_PATH)})
 
             def should_be_404(self, topic):
                 expect(topic.status_code).to_equal(404)

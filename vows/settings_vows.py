@@ -11,9 +11,7 @@
 from pyvows import Vows, expect
 from django.test.utils import override_settings
 
-from django_pyvows.context import DjangoContext
-
-DjangoContext.start_environment("sandbox.sandbox.settings")
+from test_config import ConfiguredVowsContext as DjangoContext
 
 
 @Vows.batch

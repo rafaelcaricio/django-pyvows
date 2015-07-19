@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 # django-pyvows extensions
@@ -10,9 +9,7 @@
 
 from pyvows import Vows, expect
 
-from django_pyvows.context import DjangoContext
-
-DjangoContext.start_environment("sandbox.sandbox.settings")
+from test_config import ConfiguredVowsContext as DjangoContext
 
 
 @Vows.batch

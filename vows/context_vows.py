@@ -19,7 +19,7 @@ class ContextTest(Vows.Context):
 
     @capture_error
     def topic(self):
-        return DjangoContext.start_environment(None)
+        return DjangoContext.setup_environment(None)
 
     def should_be_an_error(self, topic):
         expect(topic).to_be_an_error()
