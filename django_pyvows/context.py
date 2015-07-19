@@ -13,32 +13,27 @@ import os
 import django
 from pyvows import Vows
 
-from django_pyvows import http_helpers
+from django_pyvows.http_helpers import HttpClientSupport
+from django_pyvows.settings_helpers import SettingsOverrideSupport
 
 
-class DjangoContext(Vows.Context):
+class DjangoContext(Vows.Context, HttpClientSupport, SettingsOverrideSupport):
+    def __init__(self, parent):
+        super(DjangoContext, self).__init__(parent)
+        HttpClientSupport.__init__(self)
+        SettingsOverrideSupport.__init__(self)
+        self.ignore('start_environment', 'settings_module')
+
+    def settings_module(self):
+        return 'settings'
 
     @classmethod
-    def start_environment(cls, settings_path):
-        if not settings_path:
+    def start_environment(cls, settings_module):
+        if not settings_module:
             raise ValueError('The settings_path argument is required.')
 
-        os.environ.update({'DJANGO_SETTINGS_MODULE': settings_path})
+        os.environ.update({'DJANGO_SETTINGS_MODULE': settings_module})
         django.setup()
 
         from django.test.utils import setup_test_environment
         setup_test_environment()
-
-    def __init__(self, parent):
-        super(DjangoContext, self).__init__(parent)
-        self.ignore('start_environment', 'settings', 'get', 'post')
-
-    def settings(self, **kwargs):
-        from django.test.utils import override_settings
-        return override_settings(**kwargs)
-
-    def get(self, *args, **kwargs):
-        return http_helpers.get(*args, **kwargs)
-
-    def post(self, *args, **kwargs):
-        return http_helpers.post(*args, **kwargs)

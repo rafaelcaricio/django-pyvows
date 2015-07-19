@@ -2,13 +2,20 @@
 # -*- coding: utf-8 -*-
 
 
-def get(*args, **kwargs):
-    from django.test.client import Client
-    client = Client()
-    return client.get(*args, **kwargs)
+class HttpClientSupport(object):
+    def __init__(self):
+        self._client = None
+        self.ignore('get', 'post')
 
+    @property
+    def client(self):
+        if self._client is None:
+            from django.test.client import Client  # Needs to be lazy loaded due settings config
+            self._client = Client()
+        return self._client
 
-def post(*args, **kwargs):
-    from django.test.client import Client
-    client = Client()
-    return client.post(*args, **kwargs)
+    def get(self, *args, **kwargs):
+        return self.client.get(*args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        return self.client.post(*args, **kwargs)
