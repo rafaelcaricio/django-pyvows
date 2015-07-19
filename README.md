@@ -4,7 +4,7 @@ This project is an extension of pyVows to test [Django](https://www.djangoprojec
 
 PyVows is a BDD (Behaviour Driven Development) inspired by Vows for node.js
 
-More documentation about pyVows can be found at [the project homepage](http://pyvows.org) or for mode updated usage check the project [tests itself](https://github.com/heynemann/pyvows/tree/master/tests).
+More documentation about pyVows can be found at [the project homepage](http://pyvows.org) or for more updated usage check the project [tests itself](https://github.com/heynemann/pyvows/tree/master/tests).
 
 Django-PyVows is in sync with the latest Django developments and supports Django 1.8.
 
@@ -29,7 +29,7 @@ class SimpleTestVows(DjangoContext):
     def should_be_a_success(self, topic):
         expect(topic.status_code).to_equal(200)
 
-    def should_return_the_correct_response_type(self, topic):
+    def should_return_the_correct_response(self, topic):
         expect(topic).contains("Welcome!")
 ```
 
@@ -37,7 +37,7 @@ The default `settings_module` is `settings` so you should define it accordly bas
 
 ### HTTP Client
 
-We support `django.test.Client`, the methods `DjangoContext.get` and `DjangoContext.post` are actually simple wrappers around it so [the usage](https://docs.djangoproject.com/en/1.8/topics/testing/tools/#the-test-client) is the same.
+We support `django.test.Client`, the methods `DjangoContext.get` and `DjangoContext.post` are actually simple wrappers around it so [the usage](https://docs.djangoproject.com/en/1.8/topics/testing/tools/#the-test-client) is the same. The test client is also available in the `DjangoContext` instance as `self.client`.
 
 ### Assertions
 
