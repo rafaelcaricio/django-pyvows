@@ -26,7 +26,7 @@ class SettingsOverridingVows(DjangoContext):
             expect(topic.status_code).to_equal(200)
 
         def should_ask_for_my_name(self, topic):
-            expect(topic.content).to_equal("What's your name?")
+            expect(topic).contains("What's your name?")
 
     class SayHelloWithoutName(DjangoContext):
         def topic(self):
@@ -37,7 +37,7 @@ class SettingsOverridingVows(DjangoContext):
             expect(topic.status_code).to_equal(200)
 
         def should_(self, topic):
-            expect(topic.content).to_equal("Hello, guest!")
+            expect(topic).contains("Hello, guest!")
 
     class UseDecoratorToChangeSettings(DjangoContext):
         @override_settings(SAY_HELLO_WITHOUT_NAME=True)
@@ -45,4 +45,4 @@ class SettingsOverridingVows(DjangoContext):
             return self.get('/say/')
 
         def should_say_hello_to_guest(self, topic):
-            expect(topic.content).to_equal("Hello, guest!")
+            expect(topic).contains("Hello, guest!")
