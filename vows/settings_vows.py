@@ -9,73 +9,40 @@
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
 from pyvows import Vows, expect
+from django.test.utils import override_settings
 
-from django_pyvows.context import DjangoContext, DjangoHTTPContext
-from django_pyvows.settings_manager import settings_tracker, VowsSettings
+from test_config import ConfiguredVowsContext as DjangoContext
 
-DjangoContext.start_environment("sandbox.settings")
 
 @Vows.batch
-class SettingsVows(DjangoContext):
+class SettingsOverridingVows(DjangoContext):
 
-    class WhenIUseTheSettingsTracker(DjangoContext):
-
+    class CannotSayHelloWithoutName(DjangoContext):
         def topic(self):
-            settings_tracker.install()
+            with self.settings(SAY_HELLO_WITHOUT_NAME=False):
+                return self.get('/say/')
 
-        class WhenImportFromDjangoConf(DjangoContext):
+        def should_be_ok(self, topic):
+            expect(topic.status_code).to_equal(200)
 
-            def topic(self):
-                from django.conf import settings
-                return settings
+        def should_ask_for_my_name(self, topic):
+            expect(topic).contains("What's your name?")
 
-            def should_be_the_vows_settings(self, topic):
-                expect(topic).to_be_instance_of(VowsSettings)
-
-        class WhenIImportOnlyConfAndThenUseSettings(DjangoContext):
-
-            def topic(self):
-                from django import conf
-                return conf.settings
-
-            def should_be_the_vows_settings(self, topic):
-                expect(topic).to_be_instance_of(VowsSettings)
-
-        class WhenIImportTheCompletePathAndThenUseSettings(DjangoContext):
-
-            def topic(self):
-                import django.conf
-                return django.conf.settings
-
-            def should_be_the_vows_settings(self, topic):
-                expect(topic).to_be_instance_of(VowsSettings)
-
-    class CannotSayHelloWithoutName(DjangoHTTPContext):
-
+    class SayHelloWithoutName(DjangoContext):
         def topic(self):
-            self.start_server(port=9000, settings={
-                'SAY_HELLO_WITHOUT_NAME': False
-            })
+            with self.settings(SAY_HELLO_WITHOUT_NAME=True):
+                return self.get('/say/')
 
+        def should_be_ok(self, topic):
+            expect(topic.status_code).to_equal(200)
+
+        def should_(self, topic):
+            expect(topic).contains("Hello, guest!")
+
+    class UseDecoratorToChangeSettings(DjangoContext):
+        @override_settings(SAY_HELLO_WITHOUT_NAME=True)
+        def topic(self):
             return self.get('/say/')
 
-        def should_be_ok(self, (topic, content)):
-            expect(topic.status).to_equal(200)
-
-        def should_ask_for_my_name(self, (topic, content)):
-            expect(content).to_equal("What's your name?")
-
-    class SayHelloWithoutName(DjangoHTTPContext):
-
-        def topic(self):
-            self.start_server(port=9001, settings={
-                'SAY_HELLO_WITHOUT_NAME': True
-            })
-            return self.get('/say/')
-
-        def should_be_ok(self, (topic, content)):
-            expect(topic.status).to_equal(200)
-
-        def should_(self, (topic, content)):
-            expect(content).to_equal("Hello, guess!")
-
+        def should_say_hello_to_guest(self, topic):
+            expect(topic).contains("Hello, guest!")

@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 # django-pyvows extensions
@@ -8,6 +7,11 @@
 # http://www.opensource.org/licenses/mit-license
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
-from urls import *
-from models import *
-from templates import *
+
+class SettingsOverrideSupport(object):
+    def __init__(self):
+        self.ignore('settings')
+
+    def settings(self, **kwargs):
+        from django.test.utils import override_settings
+        return override_settings(**kwargs)

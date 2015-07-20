@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 # django-pyvows extensions
@@ -8,4 +7,5 @@
 # http://www.opensource.org/licenses/mit-license
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
-from context import DjangoContext, DjangoHTTPContext
+from context import DjangoContext  # NOQA
+from assertions import *  # NOQA

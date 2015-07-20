@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 # django-pyvows extensions
@@ -9,101 +8,35 @@
 # Copyright (c) 2011 Rafael Caricio rafael@caricio.com
 
 import os
-import re
 
+import django
 from pyvows import Vows
-from django.http import HttpRequest
 
-from django_pyvows import http_helpers
-from django_pyvows.assertions import Url, Model, Template
-from django_pyvows.server import DjangoServer
-from django_pyvows.settings_manager import settings_tracker
+from django_pyvows.http_helpers import HttpClientSupport
+from django_pyvows.settings_helpers import SettingsOverrideSupport
 
-DEFAULT_PORT = 3331
-DEFAULT_HOST = '127.0.0.1'
 
-class DjangoContext(Vows.Context):
-
-    @classmethod
-    def start_environment(cls, settings_path):
-        if not settings_path:
-            raise RuntimeError('The settings_path argument is required.')
-        os.environ['DJANGO_SETTINGS_MODULE'] = settings_path
-        settings_tracker.install()
-
+class DjangoContext(Vows.Context, HttpClientSupport, SettingsOverrideSupport):
     def __init__(self, parent):
         super(DjangoContext, self).__init__(parent)
-        self.ignore('get_settings', 'template', 'request', 'model', 'url', 'find_in_parent',
-                'start_environment', 'port', 'host', 'get_url', 'get', 'post')
 
-    def setup(self):
-        DjangoContext.start_environment(self.get_settings())
+        HttpClientSupport.__init__(self)
+        SettingsOverrideSupport.__init__(self)
 
-    def get_settings(self):
-        return os.environ.get('DJANGO_SETTINGS_MODULE', 'settings')
+        self.ignore('setup_environment', 'settings_module')
 
-    def url(self, path):
-        return Url(self, path)
+        DjangoContext.setup_environment(self.settings_module())
 
-    def template(self, template_name, context):
-        return Template(template_name, context)
+    def settings_module(self):
+        return 'settings'
 
-    def request(self, **kw):
-        return HttpRequest(**kw)
+    @classmethod
+    def setup_environment(cls, settings_module):
+        if not settings_module:
+            raise ValueError('The settings_path argument is required.')
 
-    def model(self, model_class):
-        return Model(self, model_class)
+        os.environ.update({'DJANGO_SETTINGS_MODULE': settings_module})
+        django.setup()
 
-    def get(self, path):
-        return http_helpers.get(self.get_url(path))
-
-    def post(self, path, params):
-        return http_helpers.post(self.get_url(path), params)
-
-    def find_in_parent(self, attr_name):
-        ctx = self.parent
-        while ctx:
-            if hasattr(ctx, attr_name):
-                return getattr(ctx, attr_name)
-            ctx = ctx.parent
-        raise ValueError('Host could not be found in the context or any of its parents')
-
-    def get_url(self, path):
-        try:
-            return self.find_in_parent('get_url')(path)
-        except ValueError:
-            return path
-
-
-
-class DjangoHTTPContext(DjangoContext):
-
-    def start_server(self, host=None, port=None, settings={}, threads=1):
-        if not port: port = DEFAULT_PORT
-        if not host: host = DEFAULT_HOST
-
-        self.address = (host, port)
-        self.server = DjangoServer(host, port)
-        self.server.start(settings,threads)
-
-    def __init__(self, parent):
-        super(DjangoHTTPContext, self).__init__(parent)
-        self.ignore('start_server', 'settings')
-
-    @property
-    def host(self):
-        if hasattr(self, 'address'):
-            return self.address[0]
-        return self.find_in_parent('host')
-
-    @property
-    def port(self):
-        if hasattr(self, 'address'):
-            return self.address[1]
-        return self.find_in_parent('port')
-
-    def get_url(self, path):
-        if re.match('^https?:\/\/', path):
-            return path
-        return 'http://%s:%d%s' % (self.host, self.port, path)
-
+        from django.test.utils import setup_test_environment
+        setup_test_environment()
