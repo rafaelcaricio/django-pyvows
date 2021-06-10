@@ -1,4 +1,4 @@
-Django==1.11.29
+Django==2.2.24
 pyVows==2.0.6
 coverage==3.5.1
 lxml==3.4.4
